@@ -1,19 +1,14 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
+import edu.ufp.inf.sd.rmi.Project.database.DB;
 import edu.ufp.inf.sd.rmi.Project.server.gamefactory.GameFactoryImpl;
 import edu.ufp.inf.sd.rmi.Project.server.gamefactory.GameFactoryRI;
-import edu.ufp.inf.sd.rmi._03_pingpong.server.PingImpl;
-import edu.ufp.inf.sd.rmi._03_pingpong.server.PingRI;
-import edu.ufp.inf.sd.rmi._03_pingpong.server.PingServer;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
-import java.util.Properties;
-import java.util.function.BiConsumer;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +33,7 @@ public class ProjectServer {
         try {
             Registry registry = contextRMI.getRegistry();
             if (registry != null) {
-                this.stub = new GameFactoryImpl();
+                this.stub = new GameFactoryImpl(new DB());
                 String serviceUrl = contextRMI.getServicesUrl(0);
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR rebind service @ {0}", serviceUrl);
                 registry.rebind(serviceUrl, this.stub);
@@ -57,7 +52,7 @@ public class ProjectServer {
             System.exit(-1);
         } else {
             ProjectServer server = new ProjectServer(args);
-
+            server.rebindService();
         }
     }
 

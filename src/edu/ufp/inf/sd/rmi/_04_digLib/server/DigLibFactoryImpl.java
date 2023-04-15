@@ -12,24 +12,23 @@ public class DigLibFactoryImpl extends UnicastRemoteObject implements DigLibFact
     public DigLibFactoryImpl() throws RemoteException {
         super();
     }
+
     DBMockup dbMockup = new DBMockup();
 
-
     @Override
-    public boolean register(String username, String password) throws RemoteException{
-        if(dbMockup.exists(username, password)){
+    public boolean register(String username, String password) throws RemoteException {
+        if (dbMockup.exists(username, password)) {
             return false;
         }
-        dbMockup.register(username,password);
+        dbMockup.register(username, password);
         return true;
     }
 
     @Override
     public DigLibSessionRI login(String username, String password) throws RemoteException {
-        if(!dbMockup.exists(username,password)){
-            dbMockup.register(username,password);
-        }
-        else{
+        if (!dbMockup.exists(username, password)) {
+            dbMockup.register(username, password);
+        } else {
             DigLibSessionImpl digLibSessionRI = null;
             try {
                 digLibSessionRI = new DigLibSessionImpl();
