@@ -1,20 +1,26 @@
 package edu.ufp.inf.sd.rmi.Project.database;
 
 
+import edu.ufp.inf.sd.rmi.Project.server.Lobby.Lobby;
 import edu.ufp.inf.sd.rmi.Project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.Project.variables.User;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.util.*;
 
 public class DB {
 
     private final ArrayList<User> users = new ArrayList<>();;
     private final Map<String, GameSessionRI> sessions = new HashMap<>();
+    private final ArrayList<Lobby> gameLobbies = new ArrayList<>();
+
+
 
     public DB() {
-        System.out.println(System.getProperty("java.class.path"));
         users.add(new User("guest", "ufp","arroz"));
+        ArrayList<GameSessionRI> lobby = new ArrayList<>();
+        lobby.add(this.getSession(getUser("guest","ufp").getUsername()));
+        Lobby lobby1 =new Lobby(UUID.randomUUID(), lobby,2, "SmallVs" );
+        gameLobbies.add(lobby1);
     }
 
     public void register(String username, String password) {
@@ -51,12 +57,27 @@ public class DB {
     }
 
     public GameSessionRI getSession(String username) {
+
         return this.sessions.get(username);
     }
 
     public boolean hasSession(String username) {
         return this.sessions.containsKey(username);
     }
+
+
+    public void addLobby(Lobby lobby){
+        gameLobbies.add(lobby);
+    }
+
+    public void updateLobby(int index, Lobby lobby){
+        gameLobbies.set(index,lobby);
+    }
+    public ArrayList<Lobby> getGameLobbies() {
+        return gameLobbies;
+    }
+
+
 }
 
 

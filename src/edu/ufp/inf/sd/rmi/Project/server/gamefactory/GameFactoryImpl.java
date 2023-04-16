@@ -21,7 +21,8 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
     @Override
     public GameSessionRI login(String username, String password) throws RemoteException {
         User user = this.db.getUser(username,password);
-        return this.getSession(user);
+        GameSessionImpl gameSession = new GameSessionImpl(this.db, user);
+        return gameSession;
     }
 
     @Override
@@ -31,6 +32,7 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
     }
 
     private GameSessionRI getSession(User user) throws RemoteException {
+
         return this.db.getSession(user.getUsername());
     }
 

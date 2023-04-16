@@ -1,6 +1,7 @@
 ```shell
 ./_1_runpython.bat
 ```
+
 ```shell
 ./_2_runregistry.bat
 ```
