@@ -1,8 +1,8 @@
-package edu.ufp.inf.sd.rmi.Project.server;
+package edu.ufp.inf.sd.rmi.project.server;
 
-import edu.ufp.inf.sd.rmi.Project.database.DB;
-import edu.ufp.inf.sd.rmi.Project.server.gamefactory.GameFactoryImpl;
-import edu.ufp.inf.sd.rmi.Project.server.gamefactory.GameFactoryRI;
+import edu.ufp.inf.sd.rmi.project.database.DB;
+import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryImpl;
+import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
 

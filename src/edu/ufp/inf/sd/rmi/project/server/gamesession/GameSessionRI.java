@@ -1,6 +1,6 @@
-package edu.ufp.inf.sd.rmi.Project.server.gamesession;
+package edu.ufp.inf.sd.rmi.project.server.gamesession;
 
-import edu.ufp.inf.sd.rmi.Project.server.Lobby.Lobby;
+import edu.ufp.inf.sd.rmi.project.server.Lobby.Lobby;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

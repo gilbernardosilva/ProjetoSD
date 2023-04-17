@@ -1,9 +1,9 @@
-package edu.ufp.inf.sd.rmi.Project.database;
+package edu.ufp.inf.sd.rmi.project.database;
 
 
-import edu.ufp.inf.sd.rmi.Project.server.Lobby.Lobby;
-import edu.ufp.inf.sd.rmi.Project.server.gamesession.GameSessionRI;
-import edu.ufp.inf.sd.rmi.Project.variables.User;
+import edu.ufp.inf.sd.rmi.project.server.Lobby.Lobby;
+import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
+import edu.ufp.inf.sd.rmi.project.variables.User;
 
 import java.util.*;
 

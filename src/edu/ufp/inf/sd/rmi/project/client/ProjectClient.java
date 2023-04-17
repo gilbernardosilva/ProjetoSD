@@ -1,18 +1,14 @@
-package edu.ufp.inf.sd.rmi.Project.client;
+package edu.ufp.inf.sd.rmi.project.client;
 
-import edu.ufp.inf.sd.rmi.Project.server.Lobby.Lobby;
-import edu.ufp.inf.sd.rmi.Project.server.Lobby.LobbyStateEnum;
-import edu.ufp.inf.sd.rmi.Project.server.gamefactory.GameFactoryRI;
-import edu.ufp.inf.sd.rmi.Project.server.gamesession.GameSessionRI;
+import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
+import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import engine.Game;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

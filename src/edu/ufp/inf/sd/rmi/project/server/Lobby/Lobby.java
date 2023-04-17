@@ -1,6 +1,6 @@
-package edu.ufp.inf.sd.rmi.Project.server.Lobby;
+package edu.ufp.inf.sd.rmi.project.server.Lobby;
 
-import edu.ufp.inf.sd.rmi.Project.server.gamesession.GameSessionRI;
+import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 
 import java.io.Serializable;
 import java.util.ArrayList;

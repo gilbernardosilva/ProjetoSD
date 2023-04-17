@@ -1,4 +1,4 @@
-package edu.ufp.inf.sd.rmi.Project.server.Lobby;
+package edu.ufp.inf.sd.rmi.project.server.Lobby;
 
 public enum LobbyStateEnum {
     ONGOING,

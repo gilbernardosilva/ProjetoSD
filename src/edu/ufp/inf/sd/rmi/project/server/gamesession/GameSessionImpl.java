@@ -2,12 +2,9 @@ package edu.ufp.inf.sd.rmi.project.server.gamesession;
 
 import edu.ufp.inf.sd.rmi.project.database.DB;
 import edu.ufp.inf.sd.rmi.project.variables.User;
-import edu.ufp.inf.sd.rmi.Project.database.DB;
-import edu.ufp.inf.sd.rmi.Project.server.Lobby.Lobby;
-import edu.ufp.inf.sd.rmi.Project.server.Lobby.LobbyStateEnum;
-import edu.ufp.inf.sd.rmi.Project.variables.User;
+import edu.ufp.inf.sd.rmi.project.server.Lobby.Lobby;
+import edu.ufp.inf.sd.rmi.project.server.Lobby.LobbyStateEnum;
 
-import java.util.Scanner;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
