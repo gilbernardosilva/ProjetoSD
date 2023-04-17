@@ -1,6 +1,6 @@
 package engine;
 
-import edu.ufp.inf.sd.rmi.Project.server.gamefactory.GameFactoryRI;
+import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 
 import java.awt.Dimension;
 import java.awt.Image;

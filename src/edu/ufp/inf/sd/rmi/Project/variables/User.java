@@ -1,4 +1,4 @@
-package edu.ufp.inf.sd.rmi.Project.variables;
+package edu.ufp.inf.sd.rmi.project.variables;
 
 public class User {
 
@@ -9,19 +9,9 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.token = new Token(username);
     }
 
-    public User(String username, String password, Token token) {
-        this.username = username;
-        this.password = password;
-        this.token = token;
-    }
-
-    public User(String username, String password, String subject) {
-        this.username = username;
-        this.password = password;
-        this.token = new Token(subject);
-    }
 
     public String getUsername() {
         return username;
@@ -39,9 +29,11 @@ public class User {
         this.password = password;
     }
 
-    public String getToken(){
-        return this.token.getValue();
+
+    public Token getToken(){
+        return this.token;
     }
+
     @Override
     public String toString() {
         return "User{" +

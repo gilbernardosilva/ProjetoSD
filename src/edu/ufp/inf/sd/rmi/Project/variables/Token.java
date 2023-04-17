@@ -1,4 +1,4 @@
-package edu.ufp.inf.sd.rmi.Project.variables;
+package edu.ufp.inf.sd.rmi.project.variables;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -14,9 +14,9 @@ public class Token {
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
     private static final String issuer = "AdvancedWars";
-    private static final int expiresIn = 25;
+    private static final int expiresIn = 3600;
     private static final int keyLength = 256;
-    private final String value;
+    private String value;
 
     public Token(String subject) {
         byte[] secret = generateSecret();
@@ -44,9 +44,21 @@ public class Token {
                 .sign(algorithm);
     }
 
-    public String verify() throws JWTVerificationException {
-        DecodedJWT decodedJWT = verifier.verify(this.value);
-        return decodedJWT.getToken();
+    public Boolean verify() throws JWTVerificationException {
+        try {
+            verifier.verify(this.value);
+            return true; // token is valid
+        } catch (JWTVerificationException e) {
+            return false; // token is invalid
+        }
+    }
+
+    public void updateToken(String username){
+        setValue(generate(username));
+    }
+
+    public void setValue(String token){
+        this.value=token;
     }
 
     public String getValue() {

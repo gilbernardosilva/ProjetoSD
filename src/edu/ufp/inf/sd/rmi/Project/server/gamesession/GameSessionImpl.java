@@ -1,7 +1,7 @@
-package edu.ufp.inf.sd.rmi.Project.server.gamesession;
+package edu.ufp.inf.sd.rmi.project.server.gamesession;
 
-import edu.ufp.inf.sd.rmi.Project.database.DB;
-import edu.ufp.inf.sd.rmi.Project.variables.User;
+import edu.ufp.inf.sd.rmi.project.database.DB;
+import edu.ufp.inf.sd.rmi.project.variables.User;
 
 
 import java.rmi.RemoteException;
@@ -9,8 +9,8 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI {
 
-    private DB db;
-    private User user;
+    private final DB db;
+    private final User user;
 
 
     public GameSessionImpl(DB db, User user) throws RemoteException {
