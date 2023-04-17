@@ -1,12 +1,2 @@
-/src/buildings/
-/src/engine/
-/src/gui/
-/src/img/
-/src/maps/
-/src/menus/
-/src/players/
-/src/saves/
-/src/terrain/
-/src/units/
 /src/edu/ufp/inf/sd/rmi/project/runscripts/setenv.bat
 /out/

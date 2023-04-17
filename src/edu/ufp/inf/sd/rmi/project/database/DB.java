@@ -22,7 +22,7 @@ public class DB {
 
     public void register(User user) {
         if (!userExists(user)) {
-            users.add(new User(user.getUsername(), user.getPassword()));
+            users.add(user);
         }
     }
 
