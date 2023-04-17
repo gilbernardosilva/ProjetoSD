@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="auth0.java.jwt" level="project" />
+    <orderEntry type="library" name="auth0.java.jwt1" level="project" />
   </component>
 </module>

@@ -1,19 +1,22 @@
 package edu.ufp.inf.sd.rmi.Project.client;
 
+import edu.ufp.inf.sd.rmi.Project.server.Lobby.Lobby;
+import edu.ufp.inf.sd.rmi.Project.server.Lobby.LobbyStateEnum;
 import edu.ufp.inf.sd.rmi.Project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.Project.server.gamesession.GameSessionRI;
-import edu.ufp.inf.sd.rmi.Project.variables.User;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import engine.Game;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ProjectClient{
+public class ProjectClient {
 
     private SetupContextRMI contextRMI;
     private GameFactoryRI stub;
@@ -23,11 +26,11 @@ public class ProjectClient{
         ProjectClient client = new ProjectClient(args);
     }
 
-    public ProjectClient(String args[] ){
-       this.initContext(args);
-       this.lookupService();
-       this.login();
-       //this.startGame();
+    public ProjectClient(String args[]) {
+        this.initContext(args);
+        this.lookupService();
+        this.login();
+        //this.startGame();
     }
 
     private void startGame() {
@@ -36,10 +39,10 @@ public class ProjectClient{
 
     private void lookupService() {
         try {
-            Registry registry=contextRMI.getRegistry();
+            Registry registry = contextRMI.getRegistry();
             if (registry != null) {
-                String serviceUrl=contextRMI.getServicesUrl(0);
-                this.stub=(GameFactoryRI) registry.lookup(serviceUrl);
+                String serviceUrl = contextRMI.getServicesUrl(0);
+                this.stub = (GameFactoryRI) registry.lookup(serviceUrl);
             }
         } catch (RemoteException | NotBoundException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
@@ -59,18 +62,19 @@ public class ProjectClient{
         switch (action) {
             case "login":
                 try {
-                    this.session = this.stub.login(username,password);
-                    System.out.println("Login feito com sucesso!");
-                    this.startGame();
+                    this.session = this.stub.login(username, password);
+                    System.out.println("Login feito com sucexo!");
+                    this.lobbyMenu(this.session);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
                 break;
             case "register":
                 try {
-                    this.stub.register(username,password);
-                    this.session = this.stub.login(username,password);
-                    this.startGame();
+                    this.stub.register(username, password);
+                    this.session = this.stub.login(username, password);
+                    System.out.println(this.session.toString());
+                    this.lobbyMenu(this.session);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -83,13 +87,85 @@ public class ProjectClient{
     private void initContext(String args[]) {
         try {
             SetupContextRMI.printArgs(this.getClass().getName(), args);
-            String registryIP=args[0];
-            String registryPort=args[1];
-            String serviceName=args[2];
-            this.contextRMI=new SetupContextRMI(this.getClass(), registryIP, registryPort, new String[]{serviceName});
+            String registryIP = args[0];
+            String registryPort = args[1];
+            String serviceName = args[2];
+            this.contextRMI = new SetupContextRMI(this.getClass(), registryIP, registryPort, new String[]{serviceName});
         } catch (RemoteException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         }
     }
 
+    private void lobbyMenu(GameSessionRI session) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Welcome to the Lobby Menu!");
+        System.out.println("Please choose an option:");
+        System.out.println("1. Created Lobbies");
+        System.out.println("2. Create New Lobby");
+
+        int choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                System.out.println("You have chosen Created Lobbies.");
+                System.out.println("Please choose a lobby to join by ID:");
+                try {
+                    System.out.print(this.session.lobbyList());
+                    int chosenLobbyId = input.nextInt();
+                    System.out.println("Joining lobby " + chosenLobbyId);
+                    int joinResult = this.session.joinLobby(chosenLobbyId, session);
+                    switch (joinResult) {
+                        case 1:
+                            System.out.println("Invalid lobby ID. Please try again.");
+                            break;
+                        case 2:
+                            System.out.println("Match ongoing, you can't join.");
+                            break;
+                        case 0:
+                            this.startGame();
+                            break;
+                    }
+                    break;
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            case 2:
+                System.out.println("You have chosen Create New Lobby.");
+                System.out.println("How many players? (Enter 2 or 4)");
+                int numPlayers = input.nextInt();
+                if (numPlayers == 2 || numPlayers == 4) {
+                    switch (numPlayers) {
+                        case 4:
+                            System.out.println("You have chosen FourCorners map.");
+                            try {
+                                if (this.session.createLobby(numPlayers, "FourCorners", this.session) == 0) {
+                                    this.startGame();
+                                }
+                                break;
+                            } catch (RemoteException e) {
+                                throw new RuntimeException(e);
+                            }
+                        case 2:
+                            System.out.println("You have chosen SmallVs map.");
+                            try {
+                                if (this.session.createLobby(numPlayers, "SmallVs", this.session) == 0) {
+                                    this.startGame();
+                                }
+                                break;
+                            } catch (RemoteException e) {
+                                throw new RuntimeException(e);
+                            }
+                        default:
+                            System.out.println("Invalid choice. Please choose again.");
+                            break;
+                    }
+                }
+                System.out.println("Invalid choice. Please choose again.");
+                break;
+            default:
+                System.out.println("Invalid choice. Please choose again.");
+                break;
+        }
+    }
 }
