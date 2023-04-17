@@ -10,6 +10,5 @@ public interface GameFactoryRI extends Remote {
 
      public GameSessionRI register(String username,String password) throws RemoteException;
 
-     int joinLobby(int index, GameSessionRI session) throws RemoteException;
 
 }

@@ -111,15 +111,20 @@ public class ProjectClient {
                 System.out.println("You have chosen Created Lobbies.");
                 System.out.println("Please choose a lobby to join by ID:");
                 try {
-                    this.session.lobbyList();
+                    System.out.print(this.session.lobbyList());
                     int chosenLobbyId = input.nextInt();
                     System.out.println("Joining lobby " + chosenLobbyId);
-                    if (this.stub.joinLobby(chosenLobbyId, session) == 1) {
-                        System.out.println("Invalid lobby ID. Please try again.");
-                    } else if (this.stub.joinLobby(chosenLobbyId, session) == 2) {
-                        System.out.println("Match ongoing, you can't join.");
-                    } else if (this.stub.joinLobby(chosenLobbyId, session) == 0) {
-                        this.startGame();
+                    int joinResult = this.session.joinLobby(chosenLobbyId, session);
+                    switch (joinResult) {
+                        case 1:
+                            System.out.println("Invalid lobby ID. Please try again.");
+                            break;
+                        case 2:
+                            System.out.println("Match ongoing, you can't join.");
+                            break;
+                        case 0:
+                            this.startGame();
+                            break;
                     }
                     break;
                 } catch (RemoteException e) {
@@ -133,32 +138,24 @@ public class ProjectClient {
                     switch (numPlayers) {
                         case 4:
                             System.out.println("You have chosen FourCorners map.");
-                            // Code to handle FourCorners map
-                            ArrayList<GameSessionRI> listSession = new ArrayList<>();
-                            listSession.add(session);
-                            Lobby lobby = new Lobby(UUID.randomUUID(), listSession, numPlayers, "FourCorners");
                             try {
-                                lobby.setLobbyState(LobbyStateEnum.PAUSED);
-                                session.createLobby(lobby);
-                                this.startGame();
+                                if (this.session.createLobby(numPlayers, "FourCorners", this.session) == 0) {
+                                    this.startGame();
+                                }
+                                break;
                             } catch (RemoteException e) {
                                 throw new RuntimeException(e);
                             }
-                            break;
                         case 2:
                             System.out.println("You have chosen SmallVs map.");
-                            // Code to handle SmallVs map
-                            ArrayList<GameSessionRI> listSessionSmallVs = new ArrayList<>();
-                            listSessionSmallVs.add(session);
-                            Lobby lobbySmallVs = new Lobby(UUID.randomUUID(), listSessionSmallVs, numPlayers, "SmallVs");
                             try {
-                                lobbySmallVs.setLobbyState(LobbyStateEnum.PAUSED);
-                                session.createLobby(lobbySmallVs);
-                                this.startGame();
+                                if (this.session.createLobby(numPlayers, "SmallVs", this.session) == 0) {
+                                    this.startGame();
+                                }
+                                break;
                             } catch (RemoteException e) {
                                 throw new RuntimeException(e);
                             }
-                            break;
                         default:
                             System.out.println("Invalid choice. Please choose again.");
                             break;

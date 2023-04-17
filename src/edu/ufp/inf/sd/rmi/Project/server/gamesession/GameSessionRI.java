@@ -8,12 +8,14 @@ import java.util.ArrayList;
 
 public interface GameSessionRI extends Remote {
 
-    void createLobby(Lobby lobby) throws RemoteException;
 
     public ArrayList<Lobby> getLobbies() throws RemoteException;
+    int joinLobby(int index, GameSessionRI session) throws RemoteException;
 
 
     void logout() throws RemoteException;
 
-    void lobbyList() throws RemoteException;
+    String lobbyList() throws RemoteException;
+
+    int createLobby(int numPlayers, String fourCorners, GameSessionRI session) throws RemoteException;
 }
