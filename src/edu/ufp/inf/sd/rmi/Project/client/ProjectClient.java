@@ -140,6 +140,7 @@ public class ProjectClient {
                     if (LobbyStateEnum.ONGOING == chosenLobby.getLobbyState()) {
                         System.out.println("Match ongoing, you can't join.");
                     } else {
+
                         // Update lobby
                         chosenLobby.setCurrentPlayers(chosenLobby.getCurrentPlayers() + 1);
                         ArrayList<GameSessionRI> lobbysessions = chosenLobby.getPlayerlist();
