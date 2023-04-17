@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 public interface GameFactoryRI extends Remote {
     GameSessionRI login(User user) throws RemoteException;
     GameSessionRI register(User user) throws RemoteException;
-    User getUser(String username, String password);
+    User getUser(String username, String password) throws RemoteException;
 
 
 

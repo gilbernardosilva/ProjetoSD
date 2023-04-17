@@ -28,15 +28,9 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         ArrayList<GameSessionRI> listSession = new ArrayList<>();
         listSession.add(session);
         Lobby lobby = new Lobby(UUID.randomUUID(), listSession, numPlayers, map);
-        try {
-            lobby.setLobbyState(LobbyStateEnum.PAUSED);
-            session.createLobby(lobby);
-            this.db.addLobby(lobby);
-            return 0;
-            this.startGame();
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        lobby.setLobbyState(LobbyStateEnum.PAUSED);
+        this.db.addLobby(lobby);
+        return 0;
     }
 
         public ArrayList<Lobby> getLobbies() throws RemoteException {

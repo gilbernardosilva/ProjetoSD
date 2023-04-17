@@ -1,6 +1,8 @@
 package edu.ufp.inf.sd.rmi.project.variables;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private String username;
     private String password;
@@ -30,7 +32,7 @@ public class User {
     }
 
 
-    public Token getToken(){
+    public Token getToken() {
         return this.token;
     }
 

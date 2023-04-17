@@ -1,4 +1,4 @@
-package edu.ufp.inf.sd.rmi.project.client;
+package edu.ufp.inf.sd.rmi.Project.client;
 
 public class ObserverImpl {
 }

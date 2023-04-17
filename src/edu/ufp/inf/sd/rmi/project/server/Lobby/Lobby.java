@@ -1,5 +1,4 @@
 package edu.ufp.inf.sd.rmi.project.server.Lobby;
-
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 
 import java.io.Serializable;

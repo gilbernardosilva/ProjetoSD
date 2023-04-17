@@ -45,7 +45,7 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
     }
 
     @Override
-    public User getUser(String username, String password){
+    public User getUser(String username, String password) throws RemoteException{
         for (User user : this.db.getUsers()) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 return user;

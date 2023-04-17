@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.project.client;
 
 import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
+import edu.ufp.inf.sd.rmi.project.variables.User;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import engine.Game;
 
@@ -46,8 +47,6 @@ public class ProjectClient {
     }
 
     private void login() {
-
-
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter 'login' or 'register': ");
         String action = scanner.nextLine();
@@ -58,24 +57,24 @@ public class ProjectClient {
         switch (action) {
             case "login":
                 try {
-                    this.session = this.stub.login(username, password);
-                    System.out.println("Login feito com sucexo!");
-                    this.lobbyMenu(this.session);
+                    this.session= this.stub.login(this.stub.getUser(username,password));
+                    System.out.println("Logged in Successfully!");
+                    this.startGame();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
                 break;
             case "register":
                 try {
-                    this.stub.register(username, password);
-                    this.session = this.stub.login(username, password);
-                    System.out.println(this.session.toString());
-                    this.lobbyMenu(this.session);
+                    User user = new User(username,password);
+                    this.session = this.stub.register(user);
+                    System.out.println("Registered Successfully");
+                    this.startGame();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             default:
-                System.out.println("Invalid action entered.");
+                System.out.println("Invalid Action");
                 break;
         }
     }
@@ -143,7 +142,7 @@ public class ProjectClient {
                                 throw new RuntimeException(e);
                             }
                         case 2:
-                            System.out.println("You have chosen SmallVs map.");
+                            System.out.println  ("You have chosen SmallVs map.");
                             try {
                                 if (this.session.createLobby(numPlayers, "SmallVs", this.session) == 0) {
                                     this.startGame();

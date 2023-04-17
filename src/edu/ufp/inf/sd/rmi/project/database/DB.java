@@ -5,7 +5,9 @@ import edu.ufp.inf.sd.rmi.project.server.Lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.project.variables.User;
 
-import java.util.*;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DB {
 
@@ -13,34 +15,29 @@ public class DB {
     private final Map<String, GameSessionRI> sessions = new HashMap<>();
     private final ArrayList<Lobby> gameLobbies = new ArrayList<>();
 
-
-
     public DB() {
-        users.add(new User("guest", "ufp","arroz"));
-        ArrayList<GameSessionRI> lobby = new ArrayList<>();
-        lobby.add(this.getSession(getUser("guest","ufp").getUsername()));
-        Lobby lobby1 =new Lobby(UUID.randomUUID(), lobby,2, "SmallVs" );
-        gameLobbies.add(lobby1);
+        System.out.println(System.getProperty("java.class.path"));
+        users.add(new User("guest", "ufp"));
     }
 
-    public void register(String username, String password) {
-        if (!exists(username, password)) {
-            users.add(new User(username, password,"register"));
+    public void register(User user) {
+        if (!userExists(user)) {
+            users.add(new User(user.getUsername(), user.getPassword()));
         }
     }
 
-    public boolean exists(String username, String password) {
+    public boolean userExists(User user) {
         for (User users : this.users) {
-            if (users.getUsername().compareTo(username) == 0 && users.getPassword().compareTo(password) == 0) {
+            if (user.getUsername().equals(users.getUsername()) && user.getPassword().equals(users.getPassword())) {
                 return true;
             }
         }
         return false;
     }
 
-    public User getUser(String username,String password){
+    public User getUser(User user){
         for (User users : this.users) {
-            if (users.getUsername().compareTo(username) == 0 && users.getPassword().compareTo(password) == 0) {
+            if (users.getUsername().compareTo(user.getUsername()) == 0 && users.getPassword().compareTo(user.getPassword()) == 0) {
                 return users;
             }
         }
@@ -57,7 +54,6 @@ public class DB {
     }
 
     public GameSessionRI getSession(String username) {
-
         return this.sessions.get(username);
     }
 
@@ -65,6 +61,12 @@ public class DB {
         return this.sessions.containsKey(username);
     }
 
+    public ArrayList<User> getUsers(){
+        return this.users;
+    }
+    public Map<String, GameSessionRI> getSessions() {
+        return sessions;
+    }
 
     public void addLobby(Lobby lobby){
         gameLobbies.add(lobby);
@@ -76,8 +78,4 @@ public class DB {
     public ArrayList<Lobby> getGameLobbies() {
         return gameLobbies;
     }
-
-
 }
-
-
