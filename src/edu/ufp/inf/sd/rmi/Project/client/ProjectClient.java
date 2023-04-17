@@ -111,51 +111,14 @@ public class ProjectClient {
                 System.out.println("You have chosen Created Lobbies.");
                 System.out.println("Please choose a lobby to join by ID:");
                 try {
-                    ArrayList<Lobby> lobbies = session.getLobbies();
-                    for (int i = 0; i < lobbies.size(); i++) {
-                        Lobby lobby = lobbies.get(i);
-                        System.out.println((i) + ". ID: " + lobby.getId() + ", Players: " + lobby.getCurrentPlayers() + "/" + lobby.getPlayers() + ", Map: " + lobby.getMap() + ", State: " + lobby.getLobbyState());
-                    }
+                    this.session.lobbyList();
                     int chosenLobbyId = input.nextInt();
-                    // Find the lobby with the chosen ID
-                    UUID id = lobbies.get(chosenLobbyId).getId();
-                    Lobby chosenLobby = null;
-                    for (Lobby lobby : lobbies) {
-                        if (lobby.getId() == id) {
-                            chosenLobby = lobby;
-                            break;
-                        }
-                    }
-                    // Check if a lobby was found
-                    if (chosenLobby == null) {
+                    System.out.println("Joining lobby " + chosenLobbyId);
+                    if (this.stub.joinLobby(chosenLobbyId, session) == 1) {
                         System.out.println("Invalid lobby ID. Please try again.");
-                        break;
-                    }
-
-                    // Join the chosen lobby
-                    System.out.println("Joining lobby " + chosenLobbyId + " with UUID " + chosenLobby.getId() + "...");
-
-
-                    // the condition is true, so start the game
-                    if (LobbyStateEnum.ONGOING == chosenLobby.getLobbyState()) {
+                    } else if (this.stub.joinLobby(chosenLobbyId, session) == 2) {
                         System.out.println("Match ongoing, you can't join.");
-                    } else {
-
-                        // Update lobby
-                        chosenLobby.setCurrentPlayers(chosenLobby.getCurrentPlayers() + 1);
-                        ArrayList<GameSessionRI> lobbysessions = chosenLobby.getPlayerlist();
-                        lobbysessions.add(session);
-                        chosenLobby.setPlayerlist(lobbysessions);
-
-                        ArrayList<GameSessionRI> lobbysessions2 = chosenLobby.getPlayerlist();
-                        System.out.println(lobbysessions2.listIterator());
-                        System.out.println("Players: " + chosenLobby.getCurrentPlayers() + "/" + chosenLobby.getPlayers());
-                        session.updateLobby(chosenLobbyId, chosenLobby);
-                        if (chosenLobby.getCurrentPlayers() == chosenLobby.getPlayers()) {
-                            chosenLobby.setLobbyState(LobbyStateEnum.ONGOING);
-                            session.updateLobby(chosenLobbyId, chosenLobby);
-                            this.startGame();
-                        }
+                    } else if (this.stub.joinLobby(chosenLobbyId, session) == 0) {
                         this.startGame();
                     }
                     break;

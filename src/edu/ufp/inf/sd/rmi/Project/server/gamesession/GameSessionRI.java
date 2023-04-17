@@ -15,5 +15,5 @@ public interface GameSessionRI extends Remote {
 
     void logout() throws RemoteException;
 
-    void updateLobby(int index, Lobby chosenLobby) throws RemoteException;
+    void lobbyList() throws RemoteException;
 }
