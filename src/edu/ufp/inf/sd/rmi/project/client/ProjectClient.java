@@ -70,7 +70,7 @@ public class ProjectClient {
                 try {
                     this.session= this.stub.login(username,password);
                     System.out.println("Logged in Successfully!");
-                    this.startGame();
+                    lobbyMenu(this.session);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -79,7 +79,7 @@ public class ProjectClient {
                 try {
                     this.session = this.stub.register(username,password);
                     System.out.println("Registered Successfully");
-                    this.startGame();
+                    lobbyMenu(this.session);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
