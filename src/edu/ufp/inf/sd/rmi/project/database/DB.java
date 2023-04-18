@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.project.database;
 
 
 import edu.ufp.inf.sd.rmi.project.server.Lobby.Lobby;
-import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionImpl;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.project.variables.User;
 
@@ -12,7 +11,7 @@ import java.util.HashMap;
 
 public class DB {
 
-    private final ArrayList<User> users = new ArrayList<>();;
+    private final ArrayList<User> users = new ArrayList<>();
     private final Map<User, GameSessionRI> sessions = new HashMap<>();
     private final ArrayList<Lobby> gameLobbies = new ArrayList<>();
 

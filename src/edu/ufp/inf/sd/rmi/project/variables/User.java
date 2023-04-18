@@ -1,7 +1,5 @@
 package edu.ufp.inf.sd.rmi.project.variables;
 
-import java.io.Serializable;
-
 public class User{
 
     private String username;

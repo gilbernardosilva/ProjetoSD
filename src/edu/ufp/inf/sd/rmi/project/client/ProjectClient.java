@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.project.client;
 
 import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
-import edu.ufp.inf.sd.rmi.project.variables.User;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import engine.Game;
 
@@ -19,11 +18,11 @@ public class ProjectClient {
     private GameFactoryRI stub;
     private GameSessionRI session;
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         ProjectClient client = new ProjectClient(args);
     }
 
-    public ProjectClient(String args[]) {
+    public ProjectClient(String[] args) {
         this.initContext(args);
         this.lookupService();
         this.login();
@@ -46,7 +45,7 @@ public class ProjectClient {
         }
     }
 
-    private void initContext(String args[]) {
+    private void initContext(String[] args) {
         try {
             SetupContextRMI.printArgs(this.getClass().getName(), args);
             String registryIP = args[0];
