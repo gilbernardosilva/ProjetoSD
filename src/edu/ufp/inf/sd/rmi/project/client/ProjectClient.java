@@ -46,39 +46,6 @@ public class ProjectClient {
         }
     }
 
-    private void login() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter 'login' or 'register': ");
-        String action = scanner.nextLine();
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-        switch (action) {
-            case "login":
-                try {
-                    this.session= this.stub.login(this.stub.getUser(username,password));
-                    System.out.println("Logged in Successfully!");
-                    this.startGame();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "register":
-                try {
-                    User user = new User(username,password);
-                    this.session = this.stub.register(user);
-                    System.out.println("Registered Successfully");
-                    this.startGame();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            default:
-                System.out.println("Invalid Action");
-                break;
-        }
-    }
-
     private void initContext(String args[]) {
         try {
             SetupContextRMI.printArgs(this.getClass().getName(), args);
@@ -91,6 +58,38 @@ public class ProjectClient {
         }
     }
 
+    private void login() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter 'login' or 'register': ");
+        String action = scanner.nextLine();
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+        switch (action) {
+            case "login":
+                try {
+                    this.session= this.stub.login(username,password);
+                    System.out.println("Logged in Successfully!");
+                    this.startGame();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "register":
+                try {
+                    this.session = this.stub.register(username,password);
+                    System.out.println("Registered Successfully");
+                    this.startGame();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            default:
+                System.out.println("Invalid Action");
+                break;
+        }
+    }
+
     private void lobbyMenu(GameSessionRI session) {
         Scanner input = new Scanner(System.in);
 
@@ -98,9 +97,7 @@ public class ProjectClient {
         System.out.println("Please choose an option:");
         System.out.println("1. Created Lobbies");
         System.out.println("2. Create New Lobby");
-
         int choice = input.nextInt();
-
         switch (choice) {
             case 1:
                 System.out.println("You have chosen Created Lobbies.");
@@ -121,7 +118,6 @@ public class ProjectClient {
                             this.startGame();
                             break;
                     }
-                    break;
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }

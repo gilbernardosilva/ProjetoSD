@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.project.database;
 
 
 import edu.ufp.inf.sd.rmi.project.server.Lobby.Lobby;
+import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionImpl;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.project.variables.User;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 public class DB {
 
     private final ArrayList<User> users = new ArrayList<>();;
-    private final Map<String, GameSessionRI> sessions = new HashMap<>();
+    private final Map<User, GameSessionRI> sessions = new HashMap<>();
     private final ArrayList<Lobby> gameLobbies = new ArrayList<>();
 
     public DB() {
@@ -20,51 +21,53 @@ public class DB {
         users.add(new User("guest", "ufp"));
     }
 
-    public void register(User user) {
-        if (!userExists(user)) {
+    public void register(String username, String password) {
+        if (!userExists(username, password)) {
+            User user = new User(username, password);
             users.add(user);
+        } else {
+            System.out.println("error");
         }
     }
 
-    public boolean userExists(User user) {
+    public boolean userExists(String username, String password) {
         for (User users : this.users) {
-            if (user.getUsername().equals(users.getUsername()) && user.getPassword().equals(users.getPassword())) {
+            if (username.equals(users.getUsername()) && password.equals(users.getPassword())) {
                 return true;
             }
         }
         return false;
     }
 
-    public User getUser(User user){
+    public User getUser(String username,String password){
         for (User users : this.users) {
-            if (users.getUsername().compareTo(user.getUsername()) == 0 && users.getPassword().compareTo(user.getPassword()) == 0) {
+            if (users.getUsername().equals(username) && users.getPassword().equals(password)) {
                 return users;
             }
         }
         return null;
     }
 
-
-    public void addSession(String username, GameSessionRI session) {
-        this.sessions.put(username, session);
+    public void addSession(User user, GameSessionRI session) {
+        this.sessions.put(user, session);
     }
 
-    public void removeSession(String username) {
-        this.sessions.remove(username);
+    public void removeSession(User user) {
+        this.sessions.remove(user);
     }
 
-    public GameSessionRI getSession(String username) {
-        return this.sessions.get(username);
+    public GameSessionRI getSession(User user) {
+        return this.sessions.get(user);
     }
 
-    public boolean hasSession(String username) {
-        return this.sessions.containsKey(username);
+    public boolean hasSession(User user) {
+        return this.sessions.containsKey(user);
     }
 
     public ArrayList<User> getUsers(){
         return this.users;
     }
-    public Map<String, GameSessionRI> getSessions() {
+    public Map<User, GameSessionRI> getSessions() {
         return sessions;
     }
 

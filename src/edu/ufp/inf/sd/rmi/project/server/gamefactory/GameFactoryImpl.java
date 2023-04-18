@@ -19,11 +19,12 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
     }
 
     @Override
-    public GameSessionRI login(User user) throws RemoteException {
-        if (this.db.hasSession(user.getUsername())){
-            return null;
-        }
-        if (this.db.userExists(user)) {
+    public GameSessionRI login(String username, String password) throws RemoteException {
+        if (this.db.userExists(username,password)) {
+            User user = getUser(username,password);
+            if (this.db.hasSession(user)){
+                throw new RemoteException("User is logged in");
+            };
             if (!user.getToken().verify()) {
                 user.getToken().updateToken(user.getUsername());
             }
@@ -34,12 +35,12 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
     }
 
     @Override
-    public GameSessionRI register(User user) throws RemoteException {
-        if (this.db.userExists(user)) {
+    public GameSessionRI register(String username, String password) throws RemoteException {
+        if (this.db.userExists(username,password)) {
             throw new RemoteException("User Already Exists");
         }else{
-            this.db.register(user);
-            return login(user);
+            this.db.register(username,password);
+            return login(username,password);
         }
 
     }
@@ -59,7 +60,7 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
     }
 
     private GameSessionRI getSession(User user) throws RemoteException {
-        return this.db.getSession(user.getUsername());
+        return this.db.getSession(user);
     }
 
 }
