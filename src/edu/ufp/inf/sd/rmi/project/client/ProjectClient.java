@@ -18,20 +18,6 @@ public class ProjectClient {
     private GameFactoryRI stub;
     private GameSessionRI session;
 
-    public static void main(String[] args) {
-        ProjectClient client = new ProjectClient(args);
-    }
-
-    public ProjectClient(String[] args) {
-        this.initContext(args);
-        this.lookupService();
-        this.login();
-        //this.startGame();
-    }
-
-    private void startGame() {
-        new Game(this.stub);
-    }
 
     private void lookupService() {
         try {
@@ -158,4 +144,20 @@ public class ProjectClient {
                 break;
         }
     }
+
+    public static void main(String[] args) {
+        ProjectClient client = new ProjectClient(args);
+    }
+
+    public ProjectClient(String[] args) {
+        this.initContext(args);
+        this.lookupService();
+        this.login();
+        //this.startGame();
+    }
+
+    private void startGame() {
+        new Game(this.stub);
+    }
+
 }

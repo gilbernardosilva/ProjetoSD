@@ -10,7 +10,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryRI {
-
     private final DB db;
 
     public GameFactoryImpl(DB db) throws RemoteException {
@@ -21,10 +20,10 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
     @Override
     public GameSessionRI login(String username, String password) throws RemoteException {
         if (this.db.userExists(username,password)) {
-            User user = getUser(username,password);
+            User user = db.getUser(username,password);
             if (this.db.hasSession(user)){
                 throw new RemoteException("User is logged in");
-            };
+            }
             if (!user.getToken().verify()) {
                 user.getToken().updateToken(user.getUsername());
             }
@@ -45,22 +44,16 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
 
     }
 
-    @Override
-    public User getUser(String username, String password) throws RemoteException{
-        for (User user : this.db.getUsers()) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
     private GameSessionRI createGameSession(User user) throws RemoteException {
         return new GameSessionImpl(db, user);
     }
 
     private GameSessionRI getSession(User user) throws RemoteException {
         return this.db.getSession(user);
+    }
+
+    public DB getDB(){
+        return db;
     }
 
 }
