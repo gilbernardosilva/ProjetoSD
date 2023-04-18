@@ -20,7 +20,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         super();
         this.db = db;
         this.user = user;
-        this.db.addSession(user.getUsername(), this);
+        this.db.addSession(user, this);
     }
 
 
@@ -91,6 +91,6 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 
     @Override
     public synchronized void logout() throws RemoteException {
-        this.db.removeSession(this.user.getUsername());
+        this.db.removeSession(user);
     }
 }
