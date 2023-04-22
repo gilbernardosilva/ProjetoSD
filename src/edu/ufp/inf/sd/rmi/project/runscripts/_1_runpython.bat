@@ -1,4 +1,4 @@
-@REM ************************************************************************************
+@REM ************   ************************************************************************
 @REM Description: run Pingclient
 @REM Author: Rui Moreira
 @REM Date: 20/02/2005
@@ -12,8 +12,8 @@ call setenv client
 @cd %ABSPATH2CLASSES%
 @REM cd %ABSPATH2DIST%
 @REM python 3:
-@REM python -m http.server 8000
-@REM python 2.7:
 python -m http.server 8000
+@REM python 2.7:
+@REM python -m SimpleHTTPServer 8000
 
 @cd %ABSPATH2SRC%\%JAVASCRIPTSPATH%

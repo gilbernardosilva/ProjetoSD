@@ -1,8 +1,3 @@
-@REM ************************************************************************************
-@REM Description: run Pingclient
-@REM Author: Rui Moreira
-@REM Date: 20/02/2019
-@REM pwd: /Users/rui/Documents/NetBeansProjects/SD/src/edu/ufp/inf/sd/rmi/helloworld
 @REM http://docs.oracle.com/javase/tutorial/rmi/running.html
 @REM ************************************************************************************
 
@@ -12,18 +7,19 @@
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
-@Set USERNAME=Nuno
+@Set USERNAME=gilbe
 
 @Set WORKDRIVE=C
-@Set JDK=%WORKDRIVE%:\\Users\\Nuno\\.jdks\\corretto-1.8.0_362
+@Set JDK=C:\Users\gilbe\.jdks\corretto-1.8.0_362
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ
-@SET CURRENT_IDE=%INTELLIJ%
+@REM Set CURRENT_IDE=%INTELLIJ%
+@Set CURRENT_IDE=%INTELLIJ%
 
 @REM ==== JAVA NAMING STUFF ====
 @Set JAVAPROJ_NAME=SD
-@set JAVAPROJ=C:\Users\Nuno\Documents\GitHub\ProjetoSD
+@set JAVAPROJ=C:\Users\gilbe\IdeaProjects\ProjetoSD
 @Set PACKAGE=project
 @Set PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
 @Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
@@ -66,7 +62,7 @@
 @Set SERVANT_ACTIVATABLE_IMPL_CLASS=%JAVAPACKAGEROLE%.%SERVER_CLASS_PREFIX%%SERVANT_ACTIVATABLE_IMPL_CLASS_POSTFIX%
 @Set SERVANT_PERSISTENT_STATE_FILENAME=%SERVICE_PREFIX%Persistent.State
 
-@Set PATH=%PATH%;.;%JDK%\bin
+@Set PATH=%PATH%;.;%JDK%\bin;
 
 @REM Set JAVAPROJ_CLASSES=build\classes\
 IF "%CURRENT_IDE%"=="%NETBEANS%" (
@@ -86,7 +82,7 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @set JAVAPROJ_DIST_FOLDER=%JAVAPROJ%\%JAVAPROJ_DIST%
 @set JAVAPROJ_JAR_FILE=%JAVAPROJ_NAME%.jar
 
-@set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;C:\Users\Nuno\Documents\GitHub\ProjetoSD\lib\*;
+@Set CLASSPATH=.;%JAVAPROJ_JAR_FILE%;C:\Users\gilbe\IdeaProjects\ProjetoSD\lib\*;
 @REM @set CLASSPATH=.;%JAVAPROJ_DIST_FOLDER%/%JAVAPROJ_JAR_FILE%.jar
 
 @Set ABSPATH2CLASSES=%JAVAPROJ%\%JAVAPROJ_CLASSES%
@@ -111,4 +107,3 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @Set SETUP_SECURITY_POLICY=file:///%JAVAPROJ%\\%JAVAPROJ_SRC%\\%JAVASECURITYPATH%\\setup.policy
 @Set RMID_SECURITY_POLICY=file:///%JAVAPROJ%\\%JAVAPROJ_SRC%\\%JAVASECURITYPATH%\\rmid.policy
 @Set GROUP_SECURITY_POLICY=file:///%JAVAPROJ%\\%JAVAPROJ_SRC%\\%JAVASECURITYPATH%\\group.policy
-

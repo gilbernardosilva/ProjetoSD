@@ -1,4 +1,12 @@
-package edu.ufp.inf.sd.rmi.Project.client;
+package edu.ufp.inf.sd.rmi.project.client;
 
-public interface ObserverRI {
+import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
+
+import java.rmi.Remote;
+
+public interface ObserverRI extends Remote {
+    String getUsername();
+    LobbyRI getLobby();
+
 }
+

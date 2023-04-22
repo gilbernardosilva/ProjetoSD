@@ -12,6 +12,9 @@ public class User{
         this.token = new Token(username);
     }
 
+    private boolean verifyToken(){
+        return token.verify();
+    }
 
     public String getUsername() {
         return username;
@@ -29,7 +32,9 @@ public class User{
         this.password = password;
     }
 
-
+    public void setToken(Token token){
+        this.token=token;
+    }
     public Token getToken() {
         return this.token;
     }

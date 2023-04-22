@@ -55,7 +55,7 @@ public class Game extends JFrame {
 	public static List<players.Base> displayC = new ArrayList<players.Base>();
 	public static List<buildings.Base> displayB = new ArrayList<buildings.Base>();
 	public static List<units.Base> displayU = new ArrayList<units.Base>();
-	
+
 	public Game(GameFactoryRI stub) {super (name);
 		//Default Settings of the JFrame
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,7 +64,7 @@ public class Game extends JFrame {
 	    setUndecorated(false);
 		setResizable(false);
 	    setLocationRelativeTo(null);
-				
+
 		//Creates all the gui elements and sets them up
 		gui = new Gui(this);
 		add(gui);

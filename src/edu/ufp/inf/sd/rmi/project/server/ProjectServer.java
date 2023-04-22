@@ -15,9 +15,8 @@ import java.util.logging.Logger;
 public class ProjectServer {
 
     private SetupContextRMI contextRMI;
-    private GameFactoryRI stub;
 
-    public ProjectServer(String args[]) {
+    public ProjectServer(String[] args) {
         try {
             SetupContextRMI.printArgs(this.getClass().getName(), args);
             String registryIP = args[0];
@@ -33,10 +32,10 @@ public class ProjectServer {
         try {
             Registry registry = contextRMI.getRegistry();
             if (registry != null) {
-                this.stub = new GameFactoryImpl(new DB());
+                GameFactoryRI stub = new GameFactoryImpl(new DB());
                 String serviceUrl = contextRMI.getServicesUrl(0);
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR rebind service @ {0}", serviceUrl);
-                registry.rebind(serviceUrl, this.stub);
+                registry.rebind(serviceUrl, stub);
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "service bound and running. :)");
             } else {
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "registry not bound (check IPs). :(");

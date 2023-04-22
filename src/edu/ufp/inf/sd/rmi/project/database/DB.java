@@ -1,23 +1,24 @@
 package edu.ufp.inf.sd.rmi.project.database;
 
-
-import edu.ufp.inf.sd.rmi.project.server.Lobby.Lobby;
+import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.project.variables.User;
 
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+
 
 public class DB {
 
     private final ArrayList<User> users = new ArrayList<>();
     private final Map<User, GameSessionRI> sessions = new HashMap<>();
-    private final ArrayList<Lobby> gameLobbies = new ArrayList<>();
-
+    private final List<Lobby> gameLobbies = Collections.synchronizedList(new ArrayList<>());
+    
     public DB() {
-        System.out.println(System.getProperty("java.class.path"));
         users.add(new User("guest", "ufp"));
+    }
+
+    public List<Lobby> getGameLobbies() {
+        return gameLobbies;
     }
 
     public void register(String username, String password) {
@@ -66,6 +67,7 @@ public class DB {
     public ArrayList<User> getUsers(){
         return this.users;
     }
+
     public Map<User, GameSessionRI> getSessions() {
         return sessions;
     }
@@ -77,7 +79,7 @@ public class DB {
     public void updateLobby(int index, Lobby lobby){
         gameLobbies.set(index,lobby);
     }
-    public ArrayList<Lobby> getGameLobbies() {
-        return gameLobbies;
-    }
+
+
+
 }
