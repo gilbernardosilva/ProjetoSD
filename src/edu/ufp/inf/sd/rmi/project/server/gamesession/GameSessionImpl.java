@@ -4,6 +4,7 @@ import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.project.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.project.database.DB;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
+import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
 import edu.ufp.inf.sd.rmi.project.variables.User;
 import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyStateEnum;
@@ -30,7 +31,9 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         Lobby lobby = new Lobby(map);
         lobby.setLobbyState(LobbyStateEnum.PAUSED);
         this.db.addLobby(lobby);
-        return 0;
+        List<Lobby> lobbies = this.db.getGameLobbies();
+        return lobbies.indexOf(lobby);
+
     }
 
     public List<Lobby> getLobbies() throws RemoteException {
@@ -52,6 +55,10 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         return sb.toString();
     }
 
+    public LobbyRI getLobby(int index) throws RemoteException{
+        List<Lobby> lobbies = this.db.getGameLobbies();
+        return lobbies.get(index);
+    }
     public int joinLobby(int index, GameSessionRI session) throws RemoteException {
         List<Lobby> lobbies = this.db.getGameLobbies();
         // Find the lobby with the chosen ID

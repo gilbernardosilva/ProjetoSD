@@ -1,10 +1,13 @@
 package engine;
 
+import edu.ufp.inf.sd.rmi.project.client.ObserverRI;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.rmi.RemoteException;
 import javax.swing.JPanel;
 	
 public class Gui extends JPanel {
@@ -36,6 +39,14 @@ public class Gui extends JPanel {
 		new menus.StartMenu();
 		if (Game.error.showing) {add(Game.error);}
 	}
+
+	public void CharacterSelection(String map, ObserverRI observer) throws RemoteException, InterruptedException {
+		Game.GameState=Game.State.MENU;
+		removeAll();
+		new menus.PlayerSelection(map, observer);
+		if (Game.error.showing) {add(Game.error);}
+	}
+
 	/**Creates the InGame screen layout*/
 	public void InGameScreen() {
 		removeAll();

@@ -1,17 +1,23 @@
 package edu.ufp.inf.sd.rmi.project.client;
 
 import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
+import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionImpl;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
+import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
+import edu.ufp.inf.sd.rmi.project.variables.User;
 import engine.Game;
 
 import java.rmi.RemoteException;
+import java.util.Observer;
 import java.util.Scanner;
 
 public class ProjectUI {
 
     private final GameFactoryRI stub;
     private GameSessionRI session;
+    private ObserverImpl observer;
+    private LobbyRI lobbyRI;
 
     public ProjectUI(GameFactoryRI GameFactoryRI) {
         this.stub = GameFactoryRI;
@@ -29,18 +35,18 @@ public class ProjectUI {
         switch (action) {
             case "login":
                 try {
-                    this.session= this.stub.login(username,password);
+                    this.session = this.stub.login(username, password);
                     System.out.println("Logged in Successfully!");
-                    lobbyMenu(this.session);
+                    lobbyMenu(this.session, username);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
                 break;
             case "register":
                 try {
-                    this.session = this.stub.register(username,password);
+                    this.session = this.stub.register(username, password);
                     System.out.println("Registered Successfully");
-                    lobbyMenu(this.session);
+                    lobbyMenu(this.session, username);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -50,7 +56,7 @@ public class ProjectUI {
         }
     }
 
-    private void lobbyMenu(GameSessionRI session) {
+    private void lobbyMenu(GameSessionRI session, String username) {
         Scanner input = new Scanner(System.in);
 
         System.out.println("Welcome to the Lobby Menu!");
@@ -75,10 +81,12 @@ public class ProjectUI {
                             System.out.println("Match ongoing, you can't join.");
                             break;
                         case 0:
-                            this.startGame();
+                            LobbyRI lobby = this.session.getLobby(chosenLobbyId);
+                            this.observer = new ObserverImpl(lobby, username);
+                            this.startGame(this.session, this.observer);
                             break;
                     }
-                } catch (RemoteException e) {
+                } catch (RemoteException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             case 2:
@@ -90,21 +98,24 @@ public class ProjectUI {
                         case 4:
                             System.out.println("You have chosen FourCorners map.");
                             try {
-                                if (this.session.createLobby(LobbyMapEnum.FourCorners, this.session) == 0) {
-                                    this.startGame();
-                                }
+                                int index = this.session.createLobby(LobbyMapEnum.FourCorners, this.session);
+                                LobbyRI lobby = this.session.getLobby(index);
+                                this.observer = new ObserverImpl(lobby, username);
+                                this.startGame(this.session, this.observer);
+
                                 break;
-                            } catch (RemoteException e) {
+                            } catch (RemoteException | InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
                         case 2:
-                            System.out.println  ("You have chosen SmallVs map.");
+                            System.out.println("You have chosen SmallVs map.");
                             try {
-                                if (this.session.createLobby(LobbyMapEnum.SmallVs, this.session) == 0) {
-                                    this.startGame();
-                                }
+                                int index = this.session.createLobby(LobbyMapEnum.SmallVs, this.session);
+                                LobbyRI lobby = this.session.getLobby(index);
+                                this.observer = new ObserverImpl(lobby, username);
+                                this.startGame(this.session, this.observer);
                                 break;
-                            } catch (RemoteException e) {
+                            } catch (RemoteException | InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
                         default:
@@ -120,7 +131,7 @@ public class ProjectUI {
         }
     }
 
-    private void startGame() {
-        new Game(this.stub);
+    private void startGame(GameSessionRI session, ObserverImpl observer) throws RemoteException, InterruptedException {
+        new Game(this.stub, session, observer);
     }
 }
