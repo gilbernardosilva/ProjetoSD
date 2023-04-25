@@ -36,14 +36,7 @@ public class Gui extends JPanel {
 	public void LoginScreen() {
 		Game.GameState=Game.State.MENU;
 		removeAll();
-		new menus.StartMenu();
-		if (Game.error.showing) {add(Game.error);}
-	}
-
-	public void CharacterSelection(String map, ObserverRI observer) throws RemoteException, InterruptedException {
-		Game.GameState=Game.State.MENU;
-		removeAll();
-		new menus.PlayerSelection(map, observer);
+		new menus.Login();
 		if (Game.error.showing) {add(Game.error);}
 	}
 

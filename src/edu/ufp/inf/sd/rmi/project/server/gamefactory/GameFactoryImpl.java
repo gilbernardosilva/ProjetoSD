@@ -52,8 +52,5 @@ public class GameFactoryImpl extends UnicastRemoteObject implements GameFactoryR
         return this.db.getSession(user);
     }
 
-    public DB getDB(){
-        return db;
-    }
 
 }

@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.project.client;
 
 import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
+import engine.Game;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -41,7 +42,7 @@ public class ProjectClient {
     }
 
     private void playService() {
-      new ProjectUI(this.stub);
+      new Game(this.stub);
     }
 
     public ProjectClient(String[] args) {

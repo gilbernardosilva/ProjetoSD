@@ -7,19 +7,16 @@ import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
 
 public interface GameSessionRI extends Remote {
 
 
-    public Collection<Lobby> getLobbies() throws RemoteException;
+    List<LobbyRI> getLobbies() throws RemoteException;
 
-    int joinLobby(int index, GameSessionRI session) throws RemoteException;
-
-    public LobbyRI getLobby(int index) throws RemoteException;
+    Lobby getLobby(int index) throws RemoteException;
 
     void logout() throws RemoteException;
 
-    String lobbyList() throws RemoteException;
-
-    int createLobby(LobbyMapEnum map, GameSessionRI session) throws RemoteException;
+    LobbyRI createLobby(LobbyMapEnum map, GameSessionRI session) throws RemoteException;
 }

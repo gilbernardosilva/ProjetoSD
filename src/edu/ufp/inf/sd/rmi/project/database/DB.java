@@ -2,8 +2,12 @@ package edu.ufp.inf.sd.rmi.project.database;
 
 import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
+import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
+import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
 import edu.ufp.inf.sd.rmi.project.variables.User;
 
+import java.lang.reflect.Array;
+import java.rmi.RemoteException;
 import java.util.*;
 
 
@@ -15,11 +19,28 @@ public class DB {
     
     public DB() {
         users.add(new User("guest", "ufp"));
+        users.add(new User("guest1", "ufp"));
+        users.add(new User("guest2", "ufp"));
+        try {
+            Lobby um = new Lobby(LobbyMapEnum.FourCorners,"guest");
+            Lobby dois = new Lobby(LobbyMapEnum.FourCorners,"guest1");
+            Lobby tres  = new Lobby(LobbyMapEnum.FourCorners,"guest2");
+            gameLobbies.add(um);
+            gameLobbies.add(dois);
+            gameLobbies.add(tres);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<Lobby> getGameLobbies() {
-        return gameLobbies;
+    public List<LobbyRI> getGameLobbies() {
+        return new ArrayList<>(this.gameLobbies);
     }
+
+    public Lobby getLobby(int index){
+        return gameLobbies.get(index);
+    }
+
 
     public void register(String username, String password) {
         if (!userExists(username, password)) {
