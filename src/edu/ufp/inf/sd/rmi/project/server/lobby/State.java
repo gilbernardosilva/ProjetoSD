@@ -6,14 +6,26 @@ import java.util.ArrayList;
 
 public class State implements Serializable {
     ArrayList<Integer> id = new ArrayList<>(4);
-    ArrayList<String> character = new ArrayList<>(4);
+    int[] character = {0,0,0,0};
     ArrayList<String> username = new ArrayList<>(4);
 
+    LobbyStatusEnum status;
 
-    public State(ArrayList<Integer> id, ArrayList<String> character, ArrayList<String> username) {
+    public State(ArrayList<Integer> id, int[] character, ArrayList<String> username) {
         this.id = id;
         this.character = character;
         this.username = username;
+    }
+
+    public State(LobbyStatusEnum status){
+        this.status = status;
+    }
+    public LobbyStatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(LobbyStatusEnum status) {
+        this.status = status;
     }
 
     public ArrayList<Integer> getId() {
@@ -24,11 +36,11 @@ public class State implements Serializable {
         this.id = id;
     }
 
-    public ArrayList<String> getCharacter() {
+    public int[] getCharacter() {
         return character;
     }
 
-    public void setCharacter(ArrayList<String> character) {
+    public void setCharacter(int[] character) {
         this.character = character;
     }
 

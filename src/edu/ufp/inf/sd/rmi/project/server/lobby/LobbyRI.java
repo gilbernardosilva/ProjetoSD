@@ -22,6 +22,8 @@ public interface LobbyRI extends Remote {
 
     LobbyStatusEnum getLobbyStatus() throws RemoteException;
 
+    void setLobbyStatus(LobbyStatusEnum lobbyStatus) throws RemoteException;
+
     int getCurrentPlayers() throws RemoteException;
 
     int getMaxPlayers() throws RemoteException;

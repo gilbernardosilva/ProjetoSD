@@ -34,8 +34,9 @@ public class Lobby extends UnicastRemoteObject implements LobbyRI {
         return lobbyStatus;
     }
 
-    public void setLobbyStatus(LobbyStatusEnum lobbyStatus) {
+    public void setLobbyStatus(LobbyStatusEnum lobbyStatus) throws RemoteException {
         this.lobbyStatus = lobbyStatus;
+        notifyAllObservers();
     }
 
     public State getState() throws RemoteException {
@@ -46,13 +47,13 @@ public class Lobby extends UnicastRemoteObject implements LobbyRI {
         if (this.state == null) {
             this.state = state;
         } else {
-            if (this.state.getCharacter().get(id) != null) {
+            if (this.state.getUsername() != null) {
                 this.state.getId().set(id, state.getId().get(id));
-                this.state.getCharacter().set(id, state.getCharacter().get(id));
+                this.state.getCharacter()[id] = state.character[id];
                 this.state.getUsername().set(id, state.getUsername().get(id));
             } else {
                 this.state.getId().add(id, state.getId().get(id));
-                this.state.getCharacter().add(id, state.getCharacter().get(id));
+                this.state.getCharacter()[id] = state.character[id];
                 this.state.getUsername().add(id, state.getUsername().get(id));
             }
         }

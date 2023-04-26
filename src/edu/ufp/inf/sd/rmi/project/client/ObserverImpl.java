@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.project.client;
 
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
+import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyStatusEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;
 import engine.Game;
 import menus.PlayerSelectionMP;
@@ -38,7 +39,12 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     @Override
     public void update() throws RemoteException {
         this.lastObserverState = lobby.getState();
-        playerSelectionMP.updatePlayerSelection(this.lastObserverState);
+        if(this.lobby.getLobbyStatus() == LobbyStatusEnum.ONGOING){
+            System.out.println("IT IS ONGOING");
+            playerSelectionMP.startGame(this.lastObserverState);
+        }else{
+            playerSelectionMP.updatePlayerSelection(this.lastObserverState);
+        }
 
     }
     public Integer getId() throws RemoteException {

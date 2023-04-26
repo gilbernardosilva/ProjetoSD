@@ -10,6 +10,9 @@ import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
+import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
+import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyStatusEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;
 import engine.Game;
 
@@ -24,7 +27,7 @@ public class PlayerSelectionMP implements ActionListener {
 
     //NPC Stuff
     JLabel[] ManOrMachine = {new JLabel("PLY"), new JLabel("NPC"), new JLabel("NPC"), new JLabel("NPC")};
-    boolean[] npc = {false, true, true, true};
+    boolean[] npc = {false, false, false, false};
 
     //Other
     JButton Return = new JButton("Return");
@@ -37,6 +40,7 @@ public class PlayerSelectionMP implements ActionListener {
     String mapname;
 
     int indexLobby;
+    Point size;
 
 
     public PlayerSelectionMP(int indexLobby) throws RemoteException {
@@ -45,17 +49,15 @@ public class PlayerSelectionMP implements ActionListener {
         ManOrMachine[i].setText(Game.username);
         npc[i] = false;
         mapname = Game.lobby.getMapName().name();
-        Point size = MenuHandler.PrepMenu(400, 200);
+        size = MenuHandler.PrepMenu(400, 200);
         System.out.println("Index é " + i);
         System.out.println(Game.lobby.getCurrentPlayers());
         System.out.println(Game.lobby.players().get(0).getUsername());
         ArrayList<Integer> ids = new ArrayList<>(Arrays.asList(null, null, null, null));
         ids.set(i, i);
-        ArrayList<String> characters = new ArrayList<>(Arrays.asList(null, null, null, null));
-        characters.set(i, Game.displayC.get(plyer[i]).name);
         ArrayList<String> usernames = new ArrayList<>(Arrays.asList(null, null, null, null));
         usernames.set(i, Game.username);
-        State state = new State(ids, characters, usernames);
+        State state = new State(ids, plyer, usernames);
         System.out.println(Game.displayC.get(plyer[i]).name);
         Game.lobby.setState(state, i);
         this.indexLobby = indexLobby;
@@ -68,8 +70,6 @@ public class PlayerSelectionMP implements ActionListener {
 
     public void updatePlayerSelection(State state) {
         try {
-            Point size = MenuHandler.PrepMenu(400, 200);
-
             for (int i = 0; i < Game.lobby.getCurrentPlayers(); i++) {
                 int id = state.getId().get(i);
                 ManOrMachine[id].setText(state.getUsername().get(i));
@@ -77,19 +77,26 @@ public class PlayerSelectionMP implements ActionListener {
                 Game.gui.add(ManOrMachine[id]);
                 Name[id].setBounds(size.x + 10 + 84 * id, size.y + 40, 64, 32);
                 Game.gui.add(Name[id]);
-                Name[id].setText(state.getCharacter().get(i));
+                plyer[i] = state.getCharacter()[i];
+                Name[id].setText(Game.displayC.get(plyer[i]).name);
             }
             int i = Game.lobby.getIndexObserver(Game.username);
 
             SetBounds(size, i);
             AddGui(i);
-          //  AddListeners();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void SetBounds(Point size,int i) {
+    public void startGame(State state) {
+        MenuHandler.CloseMenu();
+        Game.btl.NewGame(mapname);
+        Game.btl.AddCommanders(plyer, npc, 100, 50);
+        Game.gui.InGameScreen();
+    }
+
+    private void SetBounds(Point size, int i) {
         Name[i].setBounds(size.x + 10 + 84 * i, size.y + 40, 64, 32);
         ManOrMachine[i].setBounds(size.x + 12 + 84 * i, size.y + 68, 58, 24);
         Next[i].setBounds(size.x + 10 + 84 * i, size.y + 100, 64, 32);
@@ -140,20 +147,34 @@ public class PlayerSelectionMP implements ActionListener {
             MenuHandler.CloseMenu();
             new Multiplayer();
         } else if (s == ThunderbirdsAreGo) {
-            MenuHandler.CloseMenu();
-            Game.btl.NewGame(mapname);
-            Game.btl.AddCommanders(plyer, npc, 100, 50);
-            Game.gui.InGameScreen();
+            try {
+                if (Game.lobby.getCurrentPlayers() == 4 && Game.lobby.getMapName() == LobbyMapEnum.FourCorners) {
+                    MenuHandler.CloseMenu();
+                    Game.btl.NewGame(mapname);
+                    Game.btl.AddCommanders(plyer, npc, 100, 50);
+                    Game.lobby.setLobbyStatus(LobbyStatusEnum.ONGOING);
+                    Game.gui.InGameScreen();
+
+                } else if (Game.lobby.getCurrentPlayers() == 2 && Game.lobby.getMapName() == LobbyMapEnum.SmallVs) {
+                    MenuHandler.CloseMenu();
+                    Game.btl.NewGame(mapname);
+                    Game.btl.AddCommanders(plyer, npc, 100, 50);
+                    Game.lobby.setLobbyStatus(LobbyStatusEnum.ONGOING);
+                    System.out.println(Arrays.toString(plyer));
+                    Game.gui.InGameScreen();
+                }
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+
         } else if (s == Lock) {
             try {
                 int i = Game.lobby.getIndexObserver(Game.username);
                 ArrayList<Integer> ids = new ArrayList<>(Arrays.asList(null, null, null, null));
                 ids.set(i, i);
-                ArrayList<String> character = new ArrayList<>(Arrays.asList(null, null, null, null));
-                character.set(i, Game.displayC.get(plyer[i]).name);
                 ArrayList<String> username = new ArrayList<>(Arrays.asList(null, null, null, null));
                 username.set(i, Game.username);
-                State state = new State(ids, character, username);
+                State state = new State(ids, plyer, username);
                 Game.lobby.setState(state, i);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
