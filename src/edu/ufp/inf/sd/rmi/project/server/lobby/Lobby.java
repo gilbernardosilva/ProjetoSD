@@ -9,12 +9,14 @@ import java.util.*;
 
 public class Lobby extends UnicastRemoteObject implements LobbyRI {
 
+
+    private State state;
     private final UUID id;
     private List<ObserverRI> observers = Collections.synchronizedList(new ArrayList<>());
     private final LobbyMapEnum map;
     private LobbyStatusEnum lobbyStatus;
-    private String state;
     private String owner;
+
 
     public Lobby(LobbyMapEnum map, String owner) throws RemoteException {
         super();
@@ -36,21 +38,41 @@ public class Lobby extends UnicastRemoteObject implements LobbyRI {
         this.lobbyStatus = lobbyStatus;
     }
 
-    public String getState() {
+    public State getState() throws RemoteException {
         return state;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setState(State state, int id) throws RemoteException {
+        if (this.state == null) {
+            this.state = state;
+        } else {
+            if (this.state.getCharacter().get(id) != null) {
+                this.state.getId().set(id, state.getId().get(id));
+                this.state.getCharacter().set(id, state.getCharacter().get(id));
+                this.state.getUsername().set(id, state.getUsername().get(id));
+            } else {
+                this.state.getId().add(id, state.getId().get(id));
+                this.state.getCharacter().add(id, state.getCharacter().get(id));
+                this.state.getUsername().add(id, state.getUsername().get(id));
+            }
+        }
+        notifyAllObservers();
     }
 
+    public void notifyAllObservers() throws RemoteException {
+        for (ObserverRI observer : observers) {
+            observer.update();
+        }
+    }
+
+
     public int getIndexObserver(String username) throws RemoteException {
-            for (int i = 0; i < observers.size(); i++) {
-                if (observers.get(i).getUsername().equals(username)) {
-                    return i;
-                }
+        for (int i = 0; i < observers.size(); i++) {
+            if (observers.get(i).getUsername().equals(username)) {
+                return i;
             }
-            return 0;
+        }
+        return 0;
     }
 
     public UUID getId() {
@@ -107,11 +129,11 @@ public class Lobby extends UnicastRemoteObject implements LobbyRI {
         this.observers.remove(observer);
     }
 
-    public int getCurrentPlayers() throws RemoteException{
+    public int getCurrentPlayers() throws RemoteException {
         return observers.size();
     }
 
-    public int getMaxPlayers() throws RemoteException{
+    public int getMaxPlayers() throws RemoteException {
         if (map.equals(LobbyMapEnum.FourCorners)) {
             return 4;
         }

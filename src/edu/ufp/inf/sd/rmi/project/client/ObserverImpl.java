@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.project.client;
 
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
+import edu.ufp.inf.sd.rmi.project.server.lobby.State;
 import engine.Game;
+import menus.PlayerSelectionMP;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -13,6 +15,8 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     private Integer id;
     private String character;
 
+    private PlayerSelectionMP playerSelectionMP;
+    private State lastObserverState;
 
     private String username;
 
@@ -21,9 +25,22 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
         this.username = username;
         this.lobby = lobby;
         this.game = game;
-
     }
 
+    public State getLastObserverState() throws RemoteException {
+        return lastObserverState;
+    }
+
+    public void setLastObserverState(State lastObserverState) throws RemoteException {
+        this.lastObserverState = lastObserverState;
+    }
+
+    @Override
+    public void update() throws RemoteException {
+        this.lastObserverState = lobby.getState();
+        playerSelectionMP.updatePlayerSelection(this.lastObserverState);
+
+    }
     public Integer getId() throws RemoteException {
         return id;
     }
@@ -37,6 +54,13 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
         return lobby;
     }
 
+    public PlayerSelectionMP getPlayerSelectionMP() throws RemoteException{
+        return playerSelectionMP;
+    }
+
+    public void setPlayerSelectionMP(PlayerSelectionMP playerSelectionMP) throws RemoteException {
+        this.playerSelectionMP = playerSelectionMP;
+    }
 
     @Override
     public String getUsername() throws RemoteException {

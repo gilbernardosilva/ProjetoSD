@@ -6,6 +6,7 @@ import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionImpl;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
+import menus.PlayerSelectionMP;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -65,6 +66,7 @@ public class Game extends JFrame {
 	public static GameFactoryRI stub;
 	public static GameSessionRI session;
 	public static LobbyRI lobby;
+	public static PlayerSelectionMP playerSelectionMP;
 	public static ObserverImpl observer;
 	public static String username;
 	public static Game game;

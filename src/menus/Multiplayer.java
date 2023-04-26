@@ -2,6 +2,7 @@ package menus;
 
 import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
+import edu.ufp.inf.sd.rmi.project.server.lobby.State;
 import engine.Game;
 
 import javax.swing.*;
@@ -55,7 +56,7 @@ public class Multiplayer implements ActionListener, KeyListener {
         Return.addActionListener(this);
     }
 
-    private void MapList(Point size){
+    private void MapList(Point size) {
         lobbies_model = availableLobbies();
         lobbies_pane = new JScrollPane(lobbies_list = new JList<>(lobbies_model));
         lobbies_pane.setBounds(size.x + 220, size.y + 10, 140, 260);//220,10
@@ -68,7 +69,7 @@ public class Multiplayer implements ActionListener, KeyListener {
         DefaultListModel<String> lobbiesList = new DefaultListModel<>();
         try {
             for (LobbyRI lobby : Game.session.getLobbies()) {
-                String lobbyInfo = lobby.getMapName() + " - " + lobby.getLobbyStatus()+ " -" + lobby.getCurrentPlayers() + "/" + lobby.getMaxPlayers();
+                String lobbyInfo = lobby.getMapName() + " - " + lobby.getLobbyStatus() + " -" + lobby.getCurrentPlayers() + "/" + lobby.getMaxPlayers();
                 lobbiesList.addElement(lobbyInfo);
             }
         } catch (RemoteException e) {
@@ -83,12 +84,12 @@ public class Multiplayer implements ActionListener, KeyListener {
         if (source == Refresh) {
             new Multiplayer();
         } else if (source == New) {
-           new NewLobby();
+            new NewLobby();
         } else if (source == Join) {
             try {
                 int index = this.lobbies_list.getSelectedIndex();
                 Game.lobby = Game.session.getLobby(index);
-                Game.observer = new ObserverImpl(Game.lobby,Game.username,Game.game);
+                Game.observer = new ObserverImpl(Game.lobby, Game.username, Game.game);
                 Game.lobby.attach(Game.observer);
                 new PlayerSelectionMP(index);
             } catch (RemoteException ex) {
@@ -98,6 +99,7 @@ public class Multiplayer implements ActionListener, KeyListener {
             new StartMenu();
         }
     }
+
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {

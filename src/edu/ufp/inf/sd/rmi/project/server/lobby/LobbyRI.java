@@ -12,6 +12,10 @@ public interface LobbyRI extends Remote {
 
     List<ObserverRI> players() throws RemoteException;
 
+    State getState() throws RemoteException;
+
+    void setState(State state, int id) throws RemoteException;
+
     UUID getID() throws RemoteException;
 
     LobbyMapEnum getMapName() throws RemoteException;
@@ -23,10 +27,12 @@ public interface LobbyRI extends Remote {
     int getMaxPlayers() throws RemoteException;
 
     int getIndexObserver(String username) throws RemoteException;
+
     LobbyStatusEnum getLobbyState() throws RemoteException;
 
     void attach(ObserverRI obs) throws RemoteException;
 
     void detach(ObserverRI obs) throws RemoteException;
+
 }
 
