@@ -1,7 +1,6 @@
 package menus;
 
 import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
-import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
 import engine.Game;
 
@@ -13,8 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class Multiplayer implements ActionListener, KeyListener {
     public JButton New = new JButton("New");
@@ -53,6 +51,7 @@ public class Multiplayer implements ActionListener, KeyListener {
     private void AddListeners() {
         New.addActionListener(this);
         Join.addActionListener(this);
+        Refresh.addActionListener(this);
         Return.addActionListener(this);
     }
 
@@ -69,7 +68,7 @@ public class Multiplayer implements ActionListener, KeyListener {
         DefaultListModel<String> lobbiesList = new DefaultListModel<>();
         try {
             for (LobbyRI lobby : Game.session.getLobbies()) {
-                String lobbyInfo = lobby.getMapName() + " - " + lobby.getLobbyState()+ " -" + lobby.getCurrentPlayers() + "/" + lobby.getMaxPlayers();
+                String lobbyInfo = lobby.getMapName() + " - " + lobby.getLobbyStatus()+ " -" + lobby.getCurrentPlayers() + "/" + lobby.getMaxPlayers();
                 lobbiesList.addElement(lobbyInfo);
             }
         } catch (RemoteException e) {
@@ -91,10 +90,10 @@ public class Multiplayer implements ActionListener, KeyListener {
                 Game.lobby = Game.session.getLobby(index);
                 Game.observer = new ObserverImpl(Game.lobby,Game.username,Game.game);
                 Game.lobby.attach(Game.observer);
+                new PlayerSelectionMP(index);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
-            System.out.println(this.lobbies_list.getSelectedIndex());
         } else if (source == Return) {
             new StartMenu();
         }

@@ -3,6 +3,7 @@ package menus;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -30,23 +31,16 @@ public class PlayerSelectionMP implements ActionListener {
 
     String mapname;
 
+    int indexLobby;
 
-    public PlayerSelectionMP(String map) {
-        mapname = map;
+
+    public PlayerSelectionMP(int indexLobby) throws RemoteException {
+        mapname = Game.lobby.getMapName().name();
         Point size = MenuHandler.PrepMenu(400,200);
-        for (int i = 0; i < 4; i++) {
-            Prev[i].addActionListener(this);
-            Prev[i].setBounds(size.x+10+84*i, size.y+10, 64, 32);
-            Game.gui.add(Prev[i]);
-            Next[i].addActionListener(this);
-            Next[i].setBounds(size.x+10+84*i, size.y+100, 64, 32);
-            Game.gui.add(Next[i]);
-            ManOrMachine[i].addActionListener(this);
-            ManOrMachine[i].setBounds(size.x+12+84*i, size.y+68, 58, 24);
-            Game.gui.add(ManOrMachine[i]);
-            Name[i].setBounds(size.x+10+84*i, size.y+40, 64, 32);
-            Game.gui.add(Name[i]);
-        }
+        int index = Game.lobby.getIndexObserver(Game.username);
+        System.out.println("Index é " + index);
+        System.out.println(Game.lobby.getCurrentPlayers());
+        this.indexLobby= indexLobby;
         SetBounds(size);
         AddGui();
         AddListeners();
@@ -70,8 +64,20 @@ public class PlayerSelectionMP implements ActionListener {
     @Override public void actionPerformed(ActionEvent e) {
         Object s = e.getSource();
         if (s == Return) {
+            try {
+                if(Game.lobby!= null) {
+                    if (Game.lobby.getCurrentPlayers() == 1) {
+                        Game.session.deleteLobby(Game.lobby.getID());
+                    }
+                    Game.lobby.detach(Game.observer);
+                }
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+            Game.lobby= null;
+            Game.observer = null;
             MenuHandler.CloseMenu();
-            Game.gui.LoginScreen();
+            new Multiplayer();
         }
         else if(s == ThunderbirdsAreGo) {
             MenuHandler.CloseMenu();

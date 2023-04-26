@@ -15,7 +15,7 @@ public class DB {
 
     private final ArrayList<User> users = new ArrayList<>();
     private final Map<User, GameSessionRI> sessions = new HashMap<>();
-    private final List<Lobby> gameLobbies = Collections.synchronizedList(new ArrayList<>());
+    private final Map<UUID,Lobby> gameLobbies = new HashMap<>();
     
     public DB() {
         users.add(new User("guest", "ufp"));
@@ -23,22 +23,22 @@ public class DB {
         users.add(new User("guest2", "ufp"));
         try {
             Lobby um = new Lobby(LobbyMapEnum.FourCorners,"guest");
-            Lobby dois = new Lobby(LobbyMapEnum.FourCorners,"guest1");
-            Lobby tres  = new Lobby(LobbyMapEnum.FourCorners,"guest2");
-            gameLobbies.add(um);
-            gameLobbies.add(dois);
-            gameLobbies.add(tres);
+            Lobby dois = new Lobby(LobbyMapEnum.SmallVs,"guest1");
+            Lobby tres  = new Lobby(LobbyMapEnum.SmallVs,"guest2");
+            gameLobbies.put(um.getID(),um);
+            gameLobbies.put(dois.getID(),dois);
+            gameLobbies.put(tres.getID(),tres);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
     }
 
     public List<LobbyRI> getGameLobbies() {
-        return new ArrayList<>(this.gameLobbies);
+        return new ArrayList<>(this.gameLobbies.values());
     }
 
-    public Lobby getLobby(int index){
-        return gameLobbies.get(index);
+    public LobbyRI getLobby(int index){
+        return getGameLobbies().get(index);
     }
 
 
@@ -69,6 +69,20 @@ public class DB {
         return null;
     }
 
+
+
+    public void addLobby(Lobby lobby) throws RemoteException {
+        gameLobbies.put(lobby.getID(),lobby);
+    }
+
+    public void deleteLobby(UUID id){
+        if(this.gameLobbies.containsKey(id)) {
+            this.gameLobbies.remove(id);
+        }else{
+            System.out.println("Lobby does not exist");
+        }
+    }
+
     public void addSession(User user, GameSessionRI session) {
         this.sessions.put(user, session);
     }
@@ -92,15 +106,4 @@ public class DB {
     public Map<User, GameSessionRI> getSessions() {
         return sessions;
     }
-
-    public void addLobby(Lobby lobby){
-        gameLobbies.add(lobby);
-    }
-
-    public void updateLobby(int index, Lobby lobby){
-        gameLobbies.set(index,lobby);
-    }
-
-
-
 }

@@ -7,9 +7,11 @@ import edu.ufp.inf.sd.rmi.project.variables.User;
 import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyStatusEnum;
 
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.UUID;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI {
 
@@ -31,14 +33,18 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         return lobby;
     }
 
+
     public List<LobbyRI> getLobbies() throws RemoteException {
         return this.db.getGameLobbies();
     }
 
-    public Lobby getLobby(int index) throws RemoteException{
+    public LobbyRI getLobby(int index) throws RemoteException{
         return db.getLobby(index);
     }
 
+    public void deleteLobby(UUID id) throws RemoteException{
+        this.db.deleteLobby(id);
+    }
 
     @Override
     public synchronized void logout() throws RemoteException {
