@@ -18,6 +18,12 @@ public interface LobbyRI extends Remote {
 
     UUID getID() throws RemoteException;
 
+    State getGameState() throws RemoteException;
+
+    void setGameState(State state) throws RemoteException;
+
+    void notifyAllObserversGame() throws RemoteException;
+
     LobbyMapEnum getMapName() throws RemoteException;
 
     LobbyStatusEnum getLobbyStatus() throws RemoteException;

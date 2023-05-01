@@ -11,6 +11,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyRI {
 
 
     private State state;
+    private State gameState;
     private final UUID id;
     private List<ObserverRI> observers = Collections.synchronizedList(new ArrayList<>());
     private final LobbyMapEnum map;
@@ -60,12 +61,27 @@ public class Lobby extends UnicastRemoteObject implements LobbyRI {
         notifyAllObservers();
     }
 
+    public State getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(State state) throws RemoteException {
+        this.gameState = state;
+        notifyAllObserversGame();
+
+    }
+
     public void notifyAllObservers() throws RemoteException {
         for (ObserverRI observer : observers) {
             observer.update();
         }
     }
 
+    public void notifyAllObserversGame() throws RemoteException {
+        for (ObserverRI observer : observers) {
+            observer.updateGame();
+        }
+    }
 
     public int getIndexObserver(String username) throws RemoteException {
         for (int i = 0; i < observers.size(); i++) {

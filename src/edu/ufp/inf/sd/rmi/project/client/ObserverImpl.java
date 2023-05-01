@@ -18,7 +18,7 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
 
     private PlayerSelectionMP playerSelectionMP;
     private State lastObserverState;
-
+    private State lastObserverGameState;
     private String username;
 
     public ObserverImpl(LobbyRI lobby, String username, Game game) throws RemoteException {
@@ -39,14 +39,27 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     @Override
     public void update() throws RemoteException {
         this.lastObserverState = lobby.getState();
-        if(this.lobby.getLobbyStatus() == LobbyStatusEnum.ONGOING){
-            System.out.println("IT IS ONGOING");
+        if (this.lobby.getLobbyStatus() == LobbyStatusEnum.ONGOING) {
             playerSelectionMP.startGame(this.lastObserverState);
-        }else{
+        } else {
             playerSelectionMP.updatePlayerSelection(this.lastObserverState);
         }
-
     }
+
+    public void updateGame() throws RemoteException {
+        this.lastObserverGameState = lobby.getGameState();
+        players.Base ply = Game.player.get(Game.btl.currentplayer);
+        if (!this.lastObserverGameState.isEndTurn()) {
+            ply.selectx = this.lastObserverGameState.getX();
+            ply.selecty = this.lastObserverGameState.getY();
+            Game.btl.Action();
+        } else if (this.lastObserverState.getCurrentPlayerId() == 0) {
+            Game.btl.EndTurn();
+            System.out.println("AJUDA CRL " + Game.btl.currentplayer);
+        }
+    }
+
+
     public Integer getId() throws RemoteException {
         return id;
     }
@@ -60,7 +73,7 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
         return lobby;
     }
 
-    public PlayerSelectionMP getPlayerSelectionMP() throws RemoteException{
+    public PlayerSelectionMP getPlayerSelectionMP() throws RemoteException {
         return playerSelectionMP;
     }
 
@@ -73,5 +86,11 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
         return username;
     }
 
+    public State getLastObserverGameState() throws RemoteException {
+        return lastObserverGameState;
+    }
 
+    public void setLastObserverGameState(State lastObserverGameState) throws RemoteException {
+        this.lastObserverGameState = lastObserverGameState;
+    }
 }

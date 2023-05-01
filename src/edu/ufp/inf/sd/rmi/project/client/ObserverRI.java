@@ -18,6 +18,12 @@ public interface ObserverRI extends Remote {
 
     void update() throws RemoteException;
 
+    void updateGame() throws RemoteException;
+
+    void setLastObserverGameState(State lastObserverGameState) throws RemoteException;
+
+    State getLastObserverGameState() throws RemoteException;
+
     void setPlayerSelectionMP(PlayerSelectionMP playerSelectionMP) throws RemoteException;
 
     PlayerSelectionMP getPlayerSelectionMP() throws RemoteException;
