@@ -52,7 +52,7 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
         Game.gui.addMouseListener(this);
     }
 
-    State gameState = new State(0, 0, 0);
+    State gameState = new State(0, 0, 0, "NONE");
     int DevPathing = 1;
 
     public void keyPressed(KeyEvent e) {
@@ -104,13 +104,19 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
                 }
             } else if (i == select) {
                 try {
+                    gameState.setAction("select");
                     Game.observer.getLobby().setGameState(gameState);
                 } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
                 }
             } else if (i == cancel) {
-                Game.player.get(Game.btl.currentplayer).Cancle();
-                gameState = new State(0, 0, 0);
+                gameState = new State(Game.btl.currentplayer, 0, 0, "cancel");
+                try {
+                    Game.observer.getLobby().setGameState(gameState);
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+
             } else if (i == start) {
                 new menus.Pause();
             }

@@ -4,6 +4,7 @@ import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyStatusEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;
 import engine.Game;
+import menus.MenuHandler;
 import menus.PlayerSelectionMP;
 
 import java.rmi.RemoteException;
@@ -49,13 +50,23 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
     public void updateGame() throws RemoteException {
         this.lastObserverGameState = lobby.getGameState();
         players.Base ply = Game.player.get(Game.btl.currentplayer);
-        if (!this.lastObserverGameState.isEndTurn()) {
-            ply.selectx = this.lastObserverGameState.getX();
-            ply.selecty = this.lastObserverGameState.getY();
-            Game.btl.Action();
-        } else if (this.lastObserverState.getCurrentPlayerId() == 0) {
-            Game.btl.EndTurn();
-            System.out.println("AJUDA CRL " + Game.btl.currentplayer);
+
+        switch (this.lastObserverGameState.getAction()) {
+            case "select":
+                ply.selectx = this.lastObserverGameState.getX();
+                ply.selecty = this.lastObserverGameState.getY();
+                Game.btl.Action();
+                break;
+            case "cancel":
+                Game.player.get(this.lastObserverGameState.getCurrentPlayerId()).Cancle();
+                break;
+            case "EndTurn":
+                Game.btl.EndTurn();
+                break;
+            case "BuyUnit":
+                Game.btl.Buyunit(this.lastObserverGameState.getCurrentPlayerId(), this.lastObserverGameState.getX(), this.lastObserverGameState.getY());
+                MenuHandler.CloseMenu();
+                break;
         }
     }
 

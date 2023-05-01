@@ -67,7 +67,7 @@ public class Pause implements ActionListener {
             MenuHandler.CloseMenu();
             Game.gui.LoginScreen();
         } else if (s == EndTurn) {
-            gameState = new State(true);
+            gameState = new State(0,0,0,"EndTurn");
             MenuHandler.CloseMenu();
             try {
                 Game.lobby.setGameState(gameState);

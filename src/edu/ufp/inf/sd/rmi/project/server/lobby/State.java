@@ -13,6 +13,7 @@ public class State implements Serializable {
     int x = 0;
     int y = 0;
     int unit;
+    String action;
 
     boolean endTurn = false;
 
@@ -24,11 +25,11 @@ public class State implements Serializable {
         this.username = username;
     }
 
-    public State(int currentPlayerId, int x, int y) {
+    public State(int currentPlayerId, int x, int y, String action) {
         this.currentPlayerId = currentPlayerId;
         this.x = x;
         this.y = y;
-
+        this.action = action;
     }
 
     public State(boolean endTurn) {
@@ -109,5 +110,13 @@ public class State implements Serializable {
 
     public void setEndTurn(boolean endTurn) {
         this.endTurn = endTurn;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 }
