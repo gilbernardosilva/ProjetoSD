@@ -66,7 +66,9 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
             case "BuyUnit":
                 Game.btl.Buyunit(this.lastObserverGameState.getCurrentPlayerId(), this.lastObserverGameState.getX(), this.lastObserverGameState.getY());
                 MenuHandler.CloseMenu();
+
                 break;
+
         }
     }
 
