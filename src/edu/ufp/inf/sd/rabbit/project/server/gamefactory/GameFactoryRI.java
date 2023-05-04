@@ -1,4 +1,4 @@
-package edu.ufp.inf.sd.rmi.project.server.gamefactory;
+package edu.ufp.inf.sd.rabbit.project.server.gamefactory;
 
 import edu.ufp.inf.sd.rmi.project.database.DB;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
@@ -9,4 +9,4 @@ public interface GameFactoryRI extends Remote {
     GameSessionRI login(String username, String password) throws RemoteException;
     GameSessionRI register(String username, String password) throws RemoteException;
 
-}
+    }

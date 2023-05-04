@@ -1,9 +1,9 @@
 package engine;
 
+import edu.ufp.inf.sd.rabbit.project.client.ClientImpl;
+import edu.ufp.inf.sd.rabbit.project.client.ClientRI;
 import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
-import edu.ufp.inf.sd.rmi.project.database.DB;
 import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
-import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionImpl;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
 import menus.PlayerSelectionMP;
@@ -66,8 +66,10 @@ public class Game extends JFrame {
 	public static GameFactoryRI stub;
 	public static GameSessionRI session;
 	public static LobbyRI lobby;
+	public static edu.ufp.inf.sd.rabbit.project.server.lobby.LobbyRI lobbyRabbit;
 	public static PlayerSelectionMP playerSelectionMP;
 	public static ObserverImpl observer;
+	public static ClientRI rabbitClient;
 	public static String username;
 	public static Game game;
 
@@ -83,6 +85,37 @@ public class Game extends JFrame {
 		setLocationRelativeTo(null);
 
 		Game.stub = stub;
+		game = this;
+
+		//Creates all the gui elements and sets them up
+		gui = new Gui(this);
+		add(gui);
+		gui.setFocusable(true);
+		gui.requestFocusInWindow();
+
+		//load images, initialize the map, and adds the input settings.
+		load = new LoadImages();
+		map = new Map();
+		input = new InputHandler();
+		list = new ListData();
+
+		setVisible(true);//This has been moved down here so that when everything is done, it is shown.
+		gui.LoginScreen();
+		save.LoadSettings();
+		GameLoop();
+	}
+
+	public Game(GameFactoryRI stub, ClientRI clientRI) {super (name);
+		//Default Settings of the JFrame
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(new Dimension(20*ScreenBase+6,12*ScreenBase+12));
+		setBounds(0,0,20*ScreenBase+6,12*ScreenBase+12);
+		setUndecorated(false);
+		setResizable(false);
+		setLocationRelativeTo(null);
+
+		Game.stub = stub;
+		Game.rabbitClient = clientRI;
 		game = this;
 
 		//Creates all the gui elements and sets them up

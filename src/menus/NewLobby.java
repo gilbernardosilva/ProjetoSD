@@ -1,5 +1,6 @@
 package menus;
 
+import edu.ufp.inf.sd.rabbit.project.client.ClientImpl;
 import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
@@ -11,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 import engine.Game;
@@ -56,10 +58,12 @@ public class NewLobby implements ActionListener, KeyListener {
             try {
                 Game.lobby = Game.session.createLobby(LobbyMapEnum.SmallVs, Game.session);
                 int index = Game.session.getLobbies().indexOf(Game.lobby);
-                Game.observer = new ObserverImpl(Game.lobby, Game.username, Game.game);
-                Game.lobby.attach(Game.observer);
+                System.out.println("FUNCEMINA Pa");
+                Game.rabbitClient.getObserver().sendMessage("whatever");
+                //Game.observer = new ObserverImpl(Game.lobby, Game.username, Game.game);
+                //Game.lobby.attach(Game.observer);
                 new PlayerSelectionMP(index);
-            } catch (RemoteException ex) {
+            } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         } else if (source == FourCorners) {

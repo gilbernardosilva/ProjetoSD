@@ -10,7 +10,6 @@ import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyStatusEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;

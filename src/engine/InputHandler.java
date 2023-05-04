@@ -105,6 +105,7 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
             } else if (i == select) {
                 try {
                     gameState.setAction("select");
+
                     Game.observer.getLobby().setGameState(gameState);
                 } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
