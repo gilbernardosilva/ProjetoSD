@@ -61,11 +61,18 @@ public class City implements ActionListener, ListSelectionListener {
         current = 0;
         ChangeAlt();
         Units.setSelectedIndex(0);
-        Point size = MenuHandler.PrepMenu(480, 260);
-        MenuHandler.HideBackground();
-        SetBounds(size);
-        AddGui();
-        AddListeners();
+        try {
+            if (Game.btl.currentplayer == Game.lobby.getIndexObserver(Game.username)) {
+                System.out.println("CURRENT PELAIER:" + Game.btl.currentplayer + "====" + Game.lobby.getIndexObserver(Game.username));
+                Point size = MenuHandler.PrepMenu(480, 260);
+                MenuHandler.HideBackground();
+                SetBounds(size);
+                AddGui();
+                AddListeners();
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void SetBounds(Point size) {
@@ -99,6 +106,7 @@ public class City implements ActionListener, ListSelectionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Object s = e.getSource();
+
         if (s == Return) {
             MenuHandler.CloseMenu();
         } else if (s == Buy) {

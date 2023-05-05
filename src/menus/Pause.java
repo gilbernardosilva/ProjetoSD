@@ -66,20 +66,26 @@ public class Pause implements ActionListener {
         if (s == Quit) {
             MenuHandler.CloseMenu();
             Game.gui.LoginScreen();
-        } else if (s == EndTurn) {
-            gameState = new State(0,0,0,"EndTurn");
-            MenuHandler.CloseMenu();
+        } else {
             try {
-                Game.lobby.setGameState(gameState);
+                if (s == EndTurn && Game.btl.currentplayer == Game.lobby.getIndexObserver(Game.username)) {
+                    gameState = new State(0, 0, 0, "EndTurn");
+                    MenuHandler.CloseMenu();
+                    try {
+                        Game.lobby.setGameState(gameState);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (s == Resume) {
+                    MenuHandler.CloseMenu();
+                } else if (s == Save) {
+                    Game.save.SaveGame();
+                } else if (s == Options) {
+                    new Options();
+                }
             } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
+                ex.printStackTrace();
             }
-        } else if (s == Resume) {
-            MenuHandler.CloseMenu();
-        } else if (s == Save) {
-            Game.save.SaveGame();
-        } else if (s == Options) {
-            new Options();
         }
     }
 }
