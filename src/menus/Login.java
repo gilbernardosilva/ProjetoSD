@@ -10,6 +10,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.awt.Point;
 
@@ -91,25 +93,28 @@ public class Login implements ActionListener, KeyListener {
         if (source == login) {
             String name = username.getText();
             String pass = password.getText();
+            String message = name + pass;
             try {
-                Game.session = Game.stub.login(name, pass);
-                Game.username = name;
+                Game.channel.basicPublish("AdvancedWars_exchange", "", null, message.getBytes(StandardCharsets.UTF_8));
                 new StartMenu();
                 JOptionPane.showMessageDialog(Game.gui, " Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (RemoteException ex) {
+            } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+
         } else if (source == register) {
             String name = username.getText();
             String pass = password.getText();
+            String message = name + pass;
+
             try {
-                Game.session = Game.stub.register(name, pass);
-                Game.username = name;
+                Game.channel.basicPublish("AdvancedWars_exchange", "", null, message.getBytes(StandardCharsets.UTF_8));
                 new StartMenu();
                 JOptionPane.showMessageDialog(Game.gui, "Register successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (RemoteException ex) {
+            } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+
         } else if (source == exit) {
             System.exit(0);
         }

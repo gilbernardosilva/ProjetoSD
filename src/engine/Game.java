@@ -1,5 +1,6 @@
 package engine;
 
+import com.rabbitmq.client.Channel;
 import edu.ufp.inf.sd.rabbit.project.client.ClientImpl;
 import edu.ufp.inf.sd.rabbit.project.client.ClientRI;
 import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
@@ -69,7 +70,7 @@ public class Game extends JFrame {
 	public static edu.ufp.inf.sd.rabbit.project.server.lobby.LobbyRI lobbyRabbit;
 	public static PlayerSelectionMP playerSelectionMP;
 	public static ObserverImpl observer;
-	public static ClientRI rabbitClient;
+	public static Channel channel;
 	public static String username;
 	public static Game game;
 
@@ -105,7 +106,7 @@ public class Game extends JFrame {
 		GameLoop();
 	}
 
-	public Game(GameFactoryRI stub, ClientRI clientRI) {super (name);
+	public Game(Channel channel) {super (name);
 		//Default Settings of the JFrame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(new Dimension(20*ScreenBase+6,12*ScreenBase+12));
@@ -114,8 +115,8 @@ public class Game extends JFrame {
 		setResizable(false);
 		setLocationRelativeTo(null);
 
-		Game.stub = stub;
-		Game.rabbitClient = clientRI;
+		//Game.stub = stub;
+		Game.channel = channel;
 		game = this;
 
 		//Creates all the gui elements and sets them up

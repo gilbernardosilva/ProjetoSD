@@ -39,8 +39,7 @@ public class Observer {
      */
     public Observer(ClientImpl clientImpl, String host, int port, String user, String pass, String exchangeName, BuiltinExchangeType exchangeType, String messageFormat) throws IOException, TimeoutException {
         this.clientImpl = clientImpl;
-        this.stub = new GameFactoryImpl(new DB());
-        new Game(stub, clientImpl);
+
 
         Connection connection = RabbitUtils.newConnection2Server(host, port, user, pass);
         this.channel = RabbitUtils.createChannel2Server(connection);

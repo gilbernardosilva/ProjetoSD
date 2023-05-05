@@ -13,3 +13,9 @@
 ```shell
 ./_4_runclient.bat
 ```
+```shell
+./runobserver.bat
+```
+```shell
+./runproducer.bat
+```

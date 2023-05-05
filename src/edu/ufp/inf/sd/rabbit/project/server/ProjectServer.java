@@ -85,16 +85,6 @@ public class ProjectServer {
         } catch (IOException | TimeoutException e) {
             Logger.getLogger(ProjectServer.class.getName()).log(Level.INFO, e.toString());
         }
-        /* try-with-resources will close resources automatically in reverse order, thus avoiding finally clause.
-          finally {
-            try {
-                // Lastly, we close the channel and the connection
-                if (channel != null) { channel.close(); }
-                if (connection != null) { connection.close(); }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        */
+
     }
 }

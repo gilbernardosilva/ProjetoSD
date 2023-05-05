@@ -1,10 +1,13 @@
 package edu.ufp.inf.sd.rabbit.project.client;
 
-import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
-import com.rabbitmq.client.MessageProperties;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import edu.ufp.inf.sd.rabbit.project.server.gamefactory.GameFactoryImpl;
 import edu.ufp.inf.sd.rabbit.project.server.lobby.LobbyRI;
 import edu.ufp.inf.sd.rabbit.project.server.lobby.LobbyStatusEnum;
+import edu.ufp.inf.sd.rmi.project.database.DB;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;
 import engine.Game;
 import menus.MenuHandler;
@@ -13,7 +16,6 @@ import menus.PlayerSelectionMP;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 public class ClientImpl extends UnicastRemoteObject implements ClientRI, AutoCloseable {
@@ -23,6 +25,8 @@ public class ClientImpl extends UnicastRemoteObject implements ClientRI, AutoClo
     private LobbyRI lobby;
     private Game game;
     private Integer id;
+    private transient Connection connection;
+    private transient Channel channel;
     private String character;
     private PlayerSelectionMP playerSelectionMP;
     private State lastObserverState;
@@ -30,36 +34,32 @@ public class ClientImpl extends UnicastRemoteObject implements ClientRI, AutoClo
     private String username;
 
     public ClientImpl() throws IOException, TimeoutException {
-        String host = "localhost";
-        int port = 5672;
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        connection = factory.newConnection();
+        channel = connection.createChannel();
+        //int port = 5672;
         String exchangeName = "AdvancedWars_exchange";
-        System.out.println("comecei");
-        this.observer = new Observer(this, host, port, "guest", "guest", exchangeName, BuiltinExchangeType.FANOUT, "UTF-8");
+        channel.exchangeDeclare(exchangeName, "fanout");
+        new Game(this.channel);
     }
 
-
-    public ClientImpl(LobbyRI lobby, String username, Game game) throws IOException, TimeoutException {
-        super();
-        this.username = username;
-        this.lobby = lobby;
-        this.game = game;
-    }
 
     /**
      * sends state to update
      *
      * @param message new subject state
      */
-    public void sendToServer(String message) throws IOException{
+    public void sendToServer(String message) throws IOException {
         System.out.println(this.observer);
         this.observer.sendMessage(message);
     }
 
-    public Observer getObserver() {
+    public Observer getObserver() throws RemoteException {
         return observer;
     }
 
-    public void setObserver(Observer observer) {
+    public void setObserver(Observer observer) throws RemoteException {
         this.observer = observer;
     }
 
@@ -150,5 +150,6 @@ public class ClientImpl extends UnicastRemoteObject implements ClientRI, AutoClo
     }
 
     @Override
-    public void close() throws Exception {}
+    public void close() throws Exception {
+    }
 }

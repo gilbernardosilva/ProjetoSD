@@ -23,9 +23,9 @@ public interface ClientRI extends Remote {
 
     void sendToServer(String message) throws IOException;
 
-    Observer getObserver();
+    Observer getObserver() throws RemoteException;
 
-    void setObserver(Observer observer);
+    void setObserver(Observer observer) throws RemoteException;
 
     void sendGameState(String line, String entity) throws IOException;
 
