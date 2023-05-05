@@ -1,10 +1,7 @@
 package menus;
 
-import edu.ufp.inf.sd.rabbit.project.client.ClientImpl;
-import edu.ufp.inf.sd.rabbit.project.client.Observer;
 import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
-import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
 import engine.Game;
 
 import javax.swing.*;
@@ -15,8 +12,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.rmi.RemoteException;
-
-import engine.Game;
 
 
 public class NewLobby implements ActionListener, KeyListener {
@@ -59,12 +54,8 @@ public class NewLobby implements ActionListener, KeyListener {
             try {
                 Game.lobby = Game.session.createLobby(LobbyMapEnum.SmallVs, Game.session);
                 int index = Game.session.getLobbies().indexOf(Game.lobby);
-                String msg = "Teste";
-                System.out.println("FUNCEMINA Pa");
-                Game.channel.basicPublish("AdvancedWars_exchange", "", null, msg.getBytes("UTF-8"));
-               // Game.rabbitClient.setObserver(new Observer());
-                //Game.observer = new ObserverImpl(Game.lobby, Game.username, Game.game);
-                //Game.lobby.attach(Game.observer);
+                Game.observer = new ObserverImpl(Game.lobby, Game.username, Game.game);
+                Game.lobby.attach(Game.observer);
                 new PlayerSelectionMP(index);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

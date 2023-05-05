@@ -1,90 +1,97 @@
 package edu.ufp.inf.sd.rabbit.project.server;
 
 import com.rabbitmq.client.*;
+import edu.ufp.inf.sd.rabbit.project.database.DB;
 import edu.ufp.inf.sd.rabbit.util.rabbitUtil.RabbitUtils;
+import edu.ufp.inf.sd.rmi.project.client.ObserverRI;
+import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * RabbitMQ speaks multiple protocols, e.g., AMQP, which is an open and
- * general-purpose protocol for messaging.
- * <p>
- * There are a number of clients for RabbitMQ in many different languages.
- * We will use the Java client (amqp-client-5.9.0.jar and dependencies) provided by RabbitMQ.
- * Download most recent libraries:
- * client library (amqp-client-x.y.z.jar) and dependencies (SLF4J API and SLF4J Simple)
- * and copy them into *lib* directory.
- *
- * <p>
- * Jargon terms:
- * - RabbitMQ is a message broker, i.e., a server that accepts and forwards messages.
- * - Producer: program that sends messages (Producing means sending).
- * - Queue: post box which lives inside a RabbitMQ broker (large message buffer).
- * - Consumer: program that waits to receive messages (Consuming means receiving).
- * <p>
- * NB: the producer, consumer and broker do not have to run/reside on the same host.
- *
- * @author rui
- */
+
 public class ProjectServer {
+    private transient Connection connection;
+    private transient Channel channel;
+    private final DB db;
+    private List<Lobby> lobbyList = Collections.synchronizedList(new ArrayList<>());
 
     /*+ name of the queue */
     //public final static String QUEUE_NAME="hello_queue";
+    public ProjectServer() throws IOException, TimeoutException {
+        this.db = new DB();
+        this.loginExchange();
+        this.lobbyListExchange();
+        //this.gameExchange();
+    }
 
-    /**
-     * Run publisher Send several times from terminal (will send msg "hello world" to Recv):
-     * $ ./runproducer
-     * <p>
-     * Challenge: concatenate several words from command line args (args[3].. args[n]):
-     * $ ./runcnsumer hello world again (will concatenate msg "hello world again" to send)
-     *
-     * @param args
-     */
-    public static void main(String[] args) throws IOException, TimeoutException {
-        //Read args passed via shell command
-        String host = args[0];
-        int port = Integer.parseInt(args[1]);
-        String exchangeName = args[2];
+    public void loginExchange() throws IOException, TimeoutException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        this.connection = factory.newConnection();
+        this.channel = this.connection.createChannel();
+        this.channel.exchangeDeclare("loginExchange", "fanout");
+        String queueName = this.channel.queueDeclare().getQueue();
+        this.channel.queueBind(queueName, "loginExchange", "");
 
-        /* try-with-resources will close resources automatically in reverse order... avoids finally */
-        try (Connection connection = RabbitUtils.newConnection2Server(host, port, "guest", "guest");
-             Channel channel = RabbitUtils.createChannel2Server(connection)) {
-            // Declare a queue where to send msg (idempotent, i.e., it will only be created if it doesn't exist);
-            //channel.queueDeclare(queueName, false, false, false, null);
-            //channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+        DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), "UTF-8");
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "MESSAGE RECEIVED SUCESSFULLY WE DID IT DANIEL:" + message);
+            this.auth(message);
+        };
+        this.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {
+        });
+    }
 
-            System.out.println(" [x] Declare exchange: '" + exchangeName + "'of type" + BuiltinExchangeType.FANOUT.toString());
-            channel.exchangeDeclare(exchangeName, BuiltinExchangeType.FANOUT);
+    public void auth(String message) throws IOException {
+        String sucess = "success";
+        String wrong = "wrong";
 
-            //chamar funçao que vai dar return a message, sendo esta o state em json
-            //String message = Game.lobbyRabbit.notifyAllObserversGame();
-            //String message=RabbitUtils.getMessage(args, 2);
-            String queueName = channel.queueDeclare().getQueue();
-
-            DeliverCallback deliverCallback=(consumerTag, delivery) -> {
-                String message=new String(delivery.getBody(), "UTF-8");
-
-                System.out.println(" [x] Consumer Tag [" + consumerTag + "] - Received '" + message + "'");
-                //Send the received message
-                String routingKey = "";
-                channel.basicPublish(exchangeName, routingKey, null, message.getBytes(StandardCharsets.UTF_8));
-                System.out.println(" [x] Sent '" + message + "'");
-            };
-            CancelCallback cancelCallback= consumerTag -> {
-                System.out.println(" [x] Consumer Tag [" + consumerTag + "] - Cancel Callback invoked!");
-            };
-
-            channel.basicConsume(queueName, true, deliverCallback, cancelCallback);
-
-            // Publish a message to the queue (content is byte array encoded with UTF-8)
-
-        } catch (IOException | TimeoutException e) {
-            Logger.getLogger(ProjectServer.class.getName()).log(Level.INFO, e.toString());
+        String[] parsedMessage = message.split(",");
+        if(Objects.equals(parsedMessage[2], "register")){
+            if(this.db.userExists(parsedMessage[0], parsedMessage[1])){
+                this.channel.basicPublish("",parsedMessage[0],null, wrong.getBytes(StandardCharsets.UTF_8));
+            }else{
+                this.db.register(parsedMessage[0], parsedMessage[1]);
+                this.channel.basicPublish("",parsedMessage[0],null, sucess.getBytes(StandardCharsets.UTF_8));
+            }
+        }else if(Objects.equals(parsedMessage[2], "login")){
+            if(this.db.userExists(parsedMessage[0], parsedMessage[1])){
+                this.channel.basicPublish("",parsedMessage[0],null, sucess.getBytes(StandardCharsets.UTF_8));
+            }else{
+                this.channel.basicPublish("",parsedMessage[0],null, wrong.getBytes(StandardCharsets.UTF_8));
+            }
         }
+    }
 
+    public void lobbyListExchange() throws IOException{
+        this.channel.exchangeDeclare("lobbyListExchange", "fanout");
+        String queueName = this.channel.queueDeclare().getQueue();
+        this.channel.queueBind(queueName, "lobbyListExchange", "");
+
+        DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), "UTF-8");
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "MESSAGE RECEIVED SUCESSFULLY WE DID IT DANIEL:" + message);
+            this.getLobbies(message);
+        };
+        this.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {
+        });
+
+    }
+
+    private void getLobbies(String message) throws IOException {
+       String lobbyList = this.db.getGameLobbies().toString();
+        this.channel.basicPublish("",message,null, lobbyList.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static void main(String[] args) throws IOException, TimeoutException {
+        new ProjectServer();
     }
 }

@@ -3,6 +3,8 @@ package menus;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import javax.swing.JButton;
 
 import engine.Game;
@@ -74,6 +76,14 @@ public class StartMenu implements ActionListener {
             Game.save.LoadGame();
             MenuHandler.CloseMenu();
         } else if (s == Online) {
+            try {
+                String message = Game.username;
+                Game.channel.basicPublish("lobbyListExchange", "server", null, message.getBytes(StandardCharsets.UTF_8));
+
+            } catch (IOException u) {
+                throw new RuntimeException(u);
+            }
+
             new Multiplayer();
         } else if (s == Editor) {
             Game.edit.StartEditor(
