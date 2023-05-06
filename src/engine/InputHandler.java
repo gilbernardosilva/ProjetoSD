@@ -60,7 +60,7 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
         if (i == exit) {
             System.exit(0);
         }
-        if (Game.GameState == Game.State.PLAYING) {
+        if (Game.GameState == Game.State.PLAYING && !Game.isRabbit) {
             players.Base ply = null;
             try {
 
@@ -117,6 +117,41 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
                     throw new RuntimeException(ex);
                 }
 
+            } else if (i == start) {
+                new menus.Pause();
+            }
+        } else if (Game.GameState == Game.State.PLAYING && Game.isRabbit) {
+            players.Base ply = Game.player.get(Game.btl.currentplayer);
+
+            if (i == up) {
+                ply.selecty--;
+                System.out.println(ply.selectx + "," + ply.selecty);
+                if (ply.selecty < 0) {
+                    ply.selecty++;
+                }
+            } else if (i == down) {
+                ply.selecty++;
+                System.out.println(ply.selectx + "," + ply.selecty);
+                if (ply.selecty >= Game.map.height) {
+                    ply.selecty--;
+                }
+            } else if (i == left) {
+                ply.selectx--;
+                System.out.println(ply.selectx + "," + ply.selecty);
+                if (ply.selectx < 0) {
+                    ply.selectx++;
+                }
+            } else if (i == right) {
+                ply.selectx++;
+                System.out.println(ply.selectx + "," + ply.selecty);
+                if (ply.selectx >= Game.map.width) {
+                    ply.selectx--;
+                }
+            } else if (i == select) {
+                // enviar para o servidor.
+            } else if (i == cancel) {
+                // enviar para o servidor.
+                
             } else if (i == start) {
                 new menus.Pause();
             }
