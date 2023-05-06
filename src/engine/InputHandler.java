@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 
 /**
@@ -148,10 +150,19 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
                     ply.selectx--;
                 }
             } else if (i == select) {
-                // enviar para o servidor.
+                String message = "select" + ";" + ply.selectx + ";" + ply.selecty;
+                try {
+                    Game.channel.basicPublish("gameExchange", "server", null, message.getBytes(StandardCharsets.UTF_8));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             } else if (i == cancel) {
-                // enviar para o servidor.
-                
+                String message = "cancel";
+                try {
+                    Game.channel.basicPublish("gameExchange", "server", null, message.getBytes(StandardCharsets.UTF_8));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             } else if (i == start) {
                 new menus.Pause();
             }

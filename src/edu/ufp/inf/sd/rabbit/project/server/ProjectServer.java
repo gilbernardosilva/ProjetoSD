@@ -27,68 +27,37 @@ public class ProjectServer {
     //public final static String QUEUE_NAME="hello_queue";
     public ProjectServer() throws IOException, TimeoutException {
         this.db = new DB();
-        this.loginExchange();
-        this.lobbyListExchange();
-        //this.gameExchange();
+        this.gameExchange();
+
     }
 
-    public void loginExchange() throws IOException, TimeoutException {
+    public void gameExchange() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         this.connection = factory.newConnection();
         this.channel = this.connection.createChannel();
-        this.channel.exchangeDeclare("loginExchange", "fanout");
+        this.channel.exchangeDeclare("gameExchange", "fanout");
         String queueName = this.channel.queueDeclare().getQueue();
-        this.channel.queueBind(queueName, "loginExchange", "");
+        this.channel.queueBind(queueName, "gameExchange", "");
 
         DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
             Logger.getLogger(this.getClass().getName()).log(Level.INFO, "MESSAGE RECEIVED SUCESSFULLY WE DID IT DANIEL:" + message);
-            this.auth(message);
+            this.gameHandler(message);
         };
         this.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {
         });
     }
 
-    public void auth(String message) throws IOException {
-        String sucess = "success";
-        String wrong = "wrong";
 
-        String[] parsedMessage = message.split(",");
-        if(Objects.equals(parsedMessage[2], "register")){
-            if(this.db.userExists(parsedMessage[0], parsedMessage[1])){
-                this.channel.basicPublish("",parsedMessage[0],null, wrong.getBytes(StandardCharsets.UTF_8));
-            }else{
-                this.db.register(parsedMessage[0], parsedMessage[1]);
-                this.channel.basicPublish("",parsedMessage[0],null, sucess.getBytes(StandardCharsets.UTF_8));
-            }
-        }else if(Objects.equals(parsedMessage[2], "login")){
-            if(this.db.userExists(parsedMessage[0], parsedMessage[1])){
-                this.channel.basicPublish("",parsedMessage[0],null, sucess.getBytes(StandardCharsets.UTF_8));
-            }else{
-                this.channel.basicPublish("",parsedMessage[0],null, wrong.getBytes(StandardCharsets.UTF_8));
-            }
-        }
-    }
+    // TODO: DANIEL FAZER GAMEHANDLER
+    // TODO: Message vai receber operation;playerX;playerY
+    // TODO: Exemplo: select;X;Y
+    // TODO: vai ser necessário enviar a todos os jogadores o X e o Y, e a caso seja select, BattleAction()
+    // TODO: caso seja cancel, irão cancelar a jogada do outro jogador
+    // TODO: mesma logica quando passarmos a operation = endturn, vai avisar todos os jogadores para dar endTurn()
+    public void gameHandler(String message) throws IOException {
 
-    public void lobbyListExchange() throws IOException{
-        this.channel.exchangeDeclare("lobbyListExchange", "fanout");
-        String queueName = this.channel.queueDeclare().getQueue();
-        this.channel.queueBind(queueName, "lobbyListExchange", "");
-
-        DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), "UTF-8");
-            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "MESSAGE RECEIVED SUCESSFULLY WE DID IT DANIEL:" + message);
-            this.getLobbies(message);
-        };
-        this.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {
-        });
-
-    }
-
-    private void getLobbies(String message) throws IOException {
-       String lobbyList = this.db.getGameLobbies().toString();
-        this.channel.basicPublish("",message,null, lobbyList.getBytes(StandardCharsets.UTF_8));
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {
