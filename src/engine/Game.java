@@ -68,7 +68,6 @@ public class Game extends JFrame {
     public static List<buildings.Base> displayB = new ArrayList<buildings.Base>();
     public static List<units.Base> displayU = new ArrayList<units.Base>();
 
-
     public static GameFactoryRI stub;
     public static GameSessionRI session;
     public static LobbyRI lobby;
@@ -148,7 +147,7 @@ public class Game extends JFrame {
     public static void gameHandler(String message){
         String[] content = message.split(";");
         playerID = Integer.parseInt(content[4]);
-        players.Base ply = Game.player.get(playerID);
+        players.Base ply = Game.player.get(Game.btl.currentplayer);
 
         switch (content[1]) {
             case "select":
@@ -157,16 +156,17 @@ public class Game extends JFrame {
                 Game.btl.Action();
                 break;
             case "cancel":
-                Game.player.get(playerID).Cancle();
+                Game.player.get(Game.btl.currentplayer).Cancle();
                 break;
             case "endTurn":
                 Game.btl.EndTurn();
                 break;
-            case "BuyUnit":
+            case "buyUnit":
                 Game.btl.Buyunit(Integer.parseInt(content[5]), Integer.parseInt(content[2]), Integer.parseInt(content[3]));
                 MenuHandler.CloseMenu();
                 break;
         }
+
     }
 
     public Game() {

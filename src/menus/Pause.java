@@ -78,10 +78,12 @@ public class Pause implements ActionListener {
                     } catch (RemoteException ex) {
                         throw new RuntimeException(ex);
                     }
-                }else if(s == EndTurn && Game.btl.currentplayer == Game.playerID && Game.isRabbit){
-                    String message = "endTurn";
+                }else if(s == EndTurn && Game.btl.currentplayer == Game.lobby.getIndexObserver(Game.username) && Game.isRabbit){
                     try {
-                        Game.channel.basicPublish("gameExchange", "server", null, message.getBytes(StandardCharsets.UTF_8));
+                        players.Base ply = Game.player.get(Game.btl.currentplayer);
+                        String id = Game.lobby.getID().toString();
+                        String message = id + ";" + "endTurn"+ ";" + ply.selectx + ";" + ply.selecty + ";" + Game.lobby.getIndexObserver(Game.username);
+                        Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }

@@ -156,9 +156,6 @@ public class PlayerSelectionMP implements ActionListener {
                     Game.btl.NewGame(mapname);
                     Game.btl.AddCommanders(plyer, npc, 100, 50);
                     Game.lobby.setLobbyStatus(LobbyStatusEnum.ONGOING);
-                    if(Game.isRabbit) {
-                        this.gameListener();
-                    }
                     Game.gui.InGameScreen();
                 } else if (Game.lobby.getCurrentPlayers() == 2 && Game.lobby.getMapName() == LobbyMapEnum.SmallVs) {
                     MenuHandler.CloseMenu();
@@ -166,9 +163,6 @@ public class PlayerSelectionMP implements ActionListener {
                     Game.btl.AddCommanders(plyer, npc, 100, 50);
                     Game.lobby.setLobbyStatus(LobbyStatusEnum.ONGOING);
                     System.out.println(Arrays.toString(plyer));
-                    if(Game.isRabbit) {
-                        this.gameListener();
-                    }
                     Game.gui.InGameScreen();
                 }
             } catch (RemoteException ex) {
@@ -207,20 +201,5 @@ public class PlayerSelectionMP implements ActionListener {
 
     }
 
-    private void gameListener() {
-        try {
-            String queueName =  Game.channel.queueDeclare().getQueue();
-            String routeKey = "lobby." + Game.lobby.getID().toString();
-            Game.channel.queueBind(queueName, "gameExchanger",routeKey);
-            DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
-                String message = new String(delivery.getBody(), "UTF-8");
-                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Player action" + message);
-                Game.gameHandler(message);
-            };
-            Game.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {});
-        } catch(IOException ex){
-            throw new RuntimeException(ex);
-        }
-    }
 
 }

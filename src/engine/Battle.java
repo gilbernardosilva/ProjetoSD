@@ -1,9 +1,13 @@
 package engine;
 
+import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Put the game stuff in here so all I have to do is end/start this to make a game work or not.
@@ -149,6 +153,9 @@ public class Battle {
     }
 
     public void AddCommanders(int[] coms, boolean[] npc, int start, int city) {
+        if(Game.isRabbit){
+            this.gameListener();
+        }
         startingmoney = start;
         buildingmoney = city;
         for (int i = 0; i < totalplayers; i++) {//TODO: Team setup needs to be added.
@@ -158,6 +165,30 @@ public class Battle {
             if (bld.owner != 15) {
                 bld.team = Game.player.get(bld.owner).team;
             }
+        }
+    }
+    private ArrayList<String> receivedMessages = new ArrayList<>();
+
+    private void gameListener() {
+
+        try {
+            String queueName =  Game.channel.queueDeclare().getQueue();
+            String routeKey = "lobby." + Game.lobby.getID().toString();
+            System.out.println(Game.lobby.getID().toString());
+            Game.channel.queueBind(queueName, "gameExchanger",routeKey);
+            Game.channel.basicQos(1);
+            DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
+                String message = new String(delivery.getBody(), "UTF-8");
+                if(receivedMessages.contains(message)){
+                    return;
+                }
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Player action " + message);
+                Game.gameHandler(message);
+                receivedMessages.add(message);
+            };
+            Game.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {});
+        } catch(IOException ex){
+            throw new RuntimeException(ex);
         }
     }
 

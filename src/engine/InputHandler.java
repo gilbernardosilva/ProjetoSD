@@ -131,58 +131,58 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
             }
         } else if (Game.GameState == Game.State.PLAYING && Game.isRabbit) {
             players.Base ply = Game.player.get(Game.btl.currentplayer);
-
-            if (i == up) {
-                ply.selecty--;
-                System.out.println(ply.selectx + "," + ply.selecty);
-                if (ply.selecty < 0) {
-                    ply.selecty++;
-                }
-            } else if (i == down) {
-                ply.selecty++;
-                System.out.println(ply.selectx + "," + ply.selecty);
-                if (ply.selecty >= Game.map.height) {
+                if (i == up) {
                     ply.selecty--;
-                }
-            } else if (i == left) {
-                ply.selectx--;
-                System.out.println(ply.selectx + "," + ply.selecty);
-                if (ply.selectx < 0) {
-                    ply.selectx++;
-                }
-            } else if (i == right) {
-                ply.selectx++;
-                System.out.println(ply.selectx + "," + ply.selecty);
-                if (ply.selectx >= Game.map.width) {
+                    System.out.println(ply.selectx + "," + ply.selecty);
+                    if (ply.selecty < 0) {
+                        ply.selecty++;
+                    }
+                } else if (i == down) {
+                    ply.selecty++;
+                    System.out.println(ply.selectx + "," + ply.selecty);
+                    if (ply.selecty >= Game.map.height) {
+                        ply.selecty--;
+                    }
+                } else if (i == left) {
                     ply.selectx--;
-                }
-            } else if (i == select) {
-                String id = null;
-                String playerID = null;
-                try {
-                    id = Game.lobby.getID().toString();
-                    playerID = String.valueOf(Game.lobby.getIndexObserver(Game.username));
-                    String message = id + ";" +"select" + ";" + ply.selectx + ";" + ply.selecty + ";" + playerID;
-                    System.out.println(message);
-                    Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                    System.out.println(ply.selectx + "," + ply.selecty);
+                    if (ply.selectx < 0) {
+                        ply.selectx++;
+                    }
+                } else if (i == right) {
+                    ply.selectx++;
+                    System.out.println(ply.selectx + "," + ply.selecty);
+                    if (ply.selectx >= Game.map.width) {
+                        ply.selectx--;
+                    }
+                } else if (i == select) {
+                    String id = null;
+                    String playerID = null;
+                    try {
+                        id = Game.lobby.getID().toString();
+                        playerID = String.valueOf(Game.lobby.getIndexObserver(Game.username));
+                        String message = id + ";" + "select" + ";" + ply.selectx + ";" + ply.selecty + ";" + playerID;
+                        System.out.println(message);
 
-            } else if (i == cancel) {
-                String id = null;
-                try {
-                    id = Game.lobby.getID().toString();
-                    String message = id + ";cancel";
-                    String routingKey = "lobby." + id;
-                    Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                        Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+                } else if (i == cancel) {
+                    try {
+                        String id = Game.lobby.getID().toString();
+                        String playerID = String.valueOf(Game.lobby.getIndexObserver(Game.username));
+                        String message = id + ";cancel" + ";" + ply.selectx + ";" + ply.selecty + ";" + playerID;
+                        String routingKey = "lobby." + id;
+                        Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else if (i == start) {
+                    new menus.Pause();
                 }
-            } else if (i == start) {
-                new menus.Pause();
             }
-        }
         if (Game.GameState == Game.State.EDITOR) {
             if (i == up) {
                 Game.edit.selecty--;
