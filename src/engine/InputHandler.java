@@ -61,8 +61,6 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
     int DevPathing = 1;
 
 
-
-    
     public void keyPressed(KeyEvent e) {
         int i = e.getKeyCode();
         System.out.println("CHAMANDO A TECLA: " + i);
@@ -131,58 +129,62 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
             }
         } else if (Game.GameState == Game.State.PLAYING && Game.isRabbit) {
             players.Base ply = Game.player.get(Game.btl.currentplayer);
-                if (i == up) {
-                    ply.selecty--;
-                    System.out.println(ply.selectx + "," + ply.selecty);
-                    if (ply.selecty < 0) {
-                        ply.selecty++;
-                    }
-                } else if (i == down) {
+            if (i == up) {
+                ply.selecty--;
+                System.out.println(ply.selectx + "," + ply.selecty);
+                if (ply.selecty < 0) {
                     ply.selecty++;
-                    System.out.println(ply.selectx + "," + ply.selecty);
-                    if (ply.selecty >= Game.map.height) {
-                        ply.selecty--;
-                    }
-                } else if (i == left) {
-                    ply.selectx--;
-                    System.out.println(ply.selectx + "," + ply.selecty);
-                    if (ply.selectx < 0) {
-                        ply.selectx++;
-                    }
-                } else if (i == right) {
+                }
+            } else if (i == down) {
+                ply.selecty++;
+                System.out.println(ply.selectx + "," + ply.selecty);
+                if (ply.selecty >= Game.map.height) {
+                    ply.selecty--;
+                }
+            } else if (i == left) {
+                ply.selectx--;
+                System.out.println(ply.selectx + "," + ply.selecty);
+                if (ply.selectx < 0) {
                     ply.selectx++;
-                    System.out.println(ply.selectx + "," + ply.selecty);
-                    if (ply.selectx >= Game.map.width) {
-                        ply.selectx--;
-                    }
-                } else if (i == select) {
-                    String id = null;
-                    String playerID = null;
-                    try {
+                }
+            } else if (i == right) {
+                ply.selectx++;
+                System.out.println(ply.selectx + "," + ply.selecty);
+                if (ply.selectx >= Game.map.width) {
+                    ply.selectx--;
+                }
+            } else if (i == select) {
+
+                String id = null;
+                String playerID = null;
+                try {
+                    if (Game.lobby.getIndexObserver(Game.username) == Game.btl.currentplayer) {
                         id = Game.lobby.getID().toString();
                         playerID = String.valueOf(Game.lobby.getIndexObserver(Game.username));
                         String message = id + ";" + "select" + ";" + ply.selectx + ";" + ply.selecty + ";" + playerID;
                         System.out.println(message);
 
                         Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
                     }
-
-                } else if (i == cancel) {
-                    try {
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } else if (i == cancel) {
+                try {
+                    if (Game.lobby.getIndexObserver(Game.username) == Game.btl.currentplayer) {
                         String id = Game.lobby.getID().toString();
                         String playerID = String.valueOf(Game.lobby.getIndexObserver(Game.username));
                         String message = id + ";cancel" + ";" + ply.selectx + ";" + ply.selecty + ";" + playerID;
                         String routingKey = "lobby." + id;
                         Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
                     }
-                } else if (i == start) {
-                    new menus.Pause();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
+            } else if (i == start) {
+                new menus.Pause();
             }
+        }
         if (Game.GameState == Game.State.EDITOR) {
             if (i == up) {
                 Game.edit.selecty--;
@@ -254,7 +256,6 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
             }
         }
     }
-
 
 
     public void keyTyped(KeyEvent arg0) {

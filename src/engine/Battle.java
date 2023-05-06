@@ -67,6 +67,9 @@ public class Battle {
             unit.moved = false;
         }
         currentplayer++;
+
+
+        System.out.println("CURRENT PLAYEEEEEER; " +currentplayer);
         if (currentplayer >= totalplayers) {
             currentplayer = 0;
             day++;
@@ -179,12 +182,14 @@ public class Battle {
             Game.channel.basicQos(1);
             DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
-                if(receivedMessages.contains(message)){
+                String[] Content = message.split(";");
+
+                if(receivedMessages.contains(Content[6])){
                     return;
                 }
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Player action " + message);
                 Game.gameHandler(message);
-                receivedMessages.add(message);
+                receivedMessages.add(Content[6]);
             };
             Game.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {});
         } catch(IOException ex){

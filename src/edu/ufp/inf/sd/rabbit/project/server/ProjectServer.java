@@ -51,9 +51,9 @@ public class ProjectServer {
     }
 
 
-
     public void gameHandler(String message) throws IOException {
         String[] Content = message.split(";");
+        message = message + ";" + 0 + ";" + System.currentTimeMillis();
         String routeKey = "lobby." + Content[0];
 
         this.channel.basicPublish("gameExchanger", routeKey, null, message.getBytes(StandardCharsets.UTF_8));

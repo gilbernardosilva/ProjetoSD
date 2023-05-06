@@ -159,6 +159,7 @@ public class Game extends JFrame {
                 Game.player.get(Game.btl.currentplayer).Cancle();
                 break;
             case "endTurn":
+
                 Game.btl.EndTurn();
                 break;
             case "buyUnit":
