@@ -26,6 +26,7 @@ public class ClientImpl extends UnicastRemoteObject implements ClientRI, AutoClo
 
     public ClientImpl(String[] args) throws IOException, TimeoutException {
         new ProjectClient(args);
+
     }
 
     public static void main(String[] args) throws IOException, TimeoutException {

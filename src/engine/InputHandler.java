@@ -1,5 +1,6 @@
 package engine;
 
+import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;
 
 import java.awt.event.ActionEvent;
@@ -11,6 +12,8 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Keyboard handling for the game along with the mouse setup for game handling.
@@ -57,8 +60,12 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
     State gameState = new State(0, 0, 0, "NONE");
     int DevPathing = 1;
 
+
+
+    
     public void keyPressed(KeyEvent e) {
         int i = e.getKeyCode();
+        System.out.println("CHAMANDO A TECLA: " + i);
         if (i == exit) {
             System.exit(0);
         }
@@ -150,16 +157,25 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
                     ply.selectx--;
                 }
             } else if (i == select) {
-                String message = "select" + ";" + ply.selectx + ";" + ply.selecty;
+                String id = null;
+                String playerID = null;
                 try {
-                    Game.channel.basicPublish("gameExchange", "server", null, message.getBytes(StandardCharsets.UTF_8));
+                    id = Game.lobby.getID().toString();
+                    playerID = String.valueOf(Game.lobby.getIndexObserver(Game.username));
+                    String message = id + ";" +"select" + ";" + ply.selectx + ";" + ply.selecty + ";" + playerID;
+                    System.out.println(message);
+                    Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
+
             } else if (i == cancel) {
-                String message = "cancel";
+                String id = null;
                 try {
-                    Game.channel.basicPublish("gameExchange", "server", null, message.getBytes(StandardCharsets.UTF_8));
+                    id = Game.lobby.getID().toString();
+                    String message = id + ";cancel";
+                    String routingKey = "lobby." + id;
+                    Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -238,6 +254,8 @@ public class InputHandler implements KeyListener, MouseListener, ActionListener 
             }
         }
     }
+
+
 
     public void keyTyped(KeyEvent arg0) {
     }

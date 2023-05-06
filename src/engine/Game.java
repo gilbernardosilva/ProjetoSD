@@ -1,16 +1,21 @@
 package engine;
 
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.project.server.gamesession.GameSessionRI;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
+import menus.MenuHandler;
 import menus.PlayerSelectionMP;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public class Game extends JFrame {
@@ -73,7 +78,7 @@ public class Game extends JFrame {
     public static String username;
     public static Game game;
     public static boolean isRabbit = false;
-
+    public static Integer playerID;
 
     public Game(GameFactoryRI stub) {
         super(name);
@@ -132,11 +137,36 @@ public class Game extends JFrame {
         map = new Map();
         input = new InputHandler();
         list = new ListData();
-
         setVisible(true);//This has been moved down here so that when everything is done, it is shown.
         gui.LoginScreen();
         save.LoadSettings();
         GameLoop();
+    }
+
+
+
+    public static void gameHandler(String message){
+        String[] content = message.split(";");
+        playerID = Integer.parseInt(content[4]);
+        players.Base ply = Game.player.get(playerID);
+
+        switch (content[1]) {
+            case "select":
+                ply.selectx = Integer.parseInt(content[2]); // X
+                ply.selecty = Integer.parseInt(content[3]); // Y
+                Game.btl.Action();
+                break;
+            case "cancel":
+                Game.player.get(playerID).Cancle();
+                break;
+            case "endTurn":
+                Game.btl.EndTurn();
+                break;
+            case "BuyUnit":
+                Game.btl.Buyunit(Integer.parseInt(content[5]), Integer.parseInt(content[2]), Integer.parseInt(content[3]));
+                MenuHandler.CloseMenu();
+                break;
+        }
     }
 
     public Game() {

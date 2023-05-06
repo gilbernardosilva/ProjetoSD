@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -109,7 +111,7 @@ public class City implements ActionListener, ListSelectionListener {
 
         if (s == Return) {
             MenuHandler.CloseMenu();
-        } else if (s == Buy) {
+        } else if (s == Buy && !Game.isRabbit) {
             State state = new State(ids[Units.getSelectedIndex()], x, y, "BuyUnit");
             try {
                 Game.observer.getLobby().setGameState(state);
@@ -118,6 +120,20 @@ public class City implements ActionListener, ListSelectionListener {
             }
             Game.btl.Buyunit(ids[Units.getSelectedIndex()], x, y);
             MenuHandler.CloseMenu();
+        } else if( s == Buy && Game.isRabbit){
+            String id = null;
+            try {
+                id = Game.lobby.getID().toString();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+            String message = id + ";" +"buyUnit" + ";" + x + ";" + y + ";" + Game.playerID +";"+ ids[Units.getSelectedIndex()];
+            try {
+                Game.channel.basicPublish("gameExchange", "server", null, message.getBytes(StandardCharsets.UTF_8));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 

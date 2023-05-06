@@ -3,6 +3,8 @@ package menus;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import javax.swing.JButton;
 
@@ -68,7 +70,7 @@ public class Pause implements ActionListener {
             Game.gui.LoginScreen();
         } else {
             try {
-                if (s == EndTurn && Game.btl.currentplayer == Game.lobby.getIndexObserver(Game.username)) {
+                if (s == EndTurn && Game.btl.currentplayer == Game.lobby.getIndexObserver(Game.username) && !Game.isRabbit) {
                     gameState = new State(0, 0, 0, "EndTurn");
                     MenuHandler.CloseMenu();
                     try {
@@ -76,7 +78,17 @@ public class Pause implements ActionListener {
                     } catch (RemoteException ex) {
                         throw new RuntimeException(ex);
                     }
-                } else if (s == Resume) {
+                }else if(s == EndTurn && Game.btl.currentplayer == Game.playerID && Game.isRabbit){
+                    String message = "endTurn";
+                    try {
+                        Game.channel.basicPublish("gameExchange", "server", null, message.getBytes(StandardCharsets.UTF_8));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+                    MenuHandler.CloseMenu();
+                }
+                else if (s == Resume) {
                     MenuHandler.CloseMenu();
                 } else if (s == Save) {
                     Game.save.SaveGame();

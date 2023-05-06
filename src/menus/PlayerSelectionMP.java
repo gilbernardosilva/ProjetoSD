@@ -3,13 +3,17 @@ package menus;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import com.rabbitmq.client.DeliverCallback;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyStatusEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;
@@ -152,20 +156,24 @@ public class PlayerSelectionMP implements ActionListener {
                     Game.btl.NewGame(mapname);
                     Game.btl.AddCommanders(plyer, npc, 100, 50);
                     Game.lobby.setLobbyStatus(LobbyStatusEnum.ONGOING);
+                    if(Game.isRabbit) {
+                        this.gameListener();
+                    }
                     Game.gui.InGameScreen();
-
                 } else if (Game.lobby.getCurrentPlayers() == 2 && Game.lobby.getMapName() == LobbyMapEnum.SmallVs) {
                     MenuHandler.CloseMenu();
                     Game.btl.NewGame(mapname);
                     Game.btl.AddCommanders(plyer, npc, 100, 50);
                     Game.lobby.setLobbyStatus(LobbyStatusEnum.ONGOING);
                     System.out.println(Arrays.toString(plyer));
+                    if(Game.isRabbit) {
+                        this.gameListener();
+                    }
                     Game.gui.InGameScreen();
                 }
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
-
         } else if (s == Lock) {
             try {
                 int i = Game.lobby.getIndexObserver(Game.username);
@@ -198,4 +206,21 @@ public class PlayerSelectionMP implements ActionListener {
         }
 
     }
+
+    private void gameListener() {
+        try {
+            String queueName =  Game.channel.queueDeclare().getQueue();
+            String routeKey = "lobby." + Game.lobby.getID().toString();
+            Game.channel.queueBind(queueName, "gameExchanger",routeKey);
+            DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
+                String message = new String(delivery.getBody(), "UTF-8");
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Player action" + message);
+                Game.gameHandler(message);
+            };
+            Game.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {});
+        } catch(IOException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
 }

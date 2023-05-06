@@ -1,8 +1,6 @@
 package edu.ufp.inf.sd.rabbit.project.client;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.*;
 import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import engine.Game;
@@ -37,13 +35,14 @@ public class ProjectClient {
     }
 
     private void initContext(String[] args) {
+
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         try {
             connection = factory.newConnection();
             channel = connection.createChannel();
-            String exchangeName = "AdvancedWars_exchange";
-            channel.exchangeDeclare(exchangeName, "fanout");
+            String exchangeName = "gameExchanger";
+            channel.exchangeDeclare(exchangeName, "topic");
         } catch (IOException | TimeoutException e) {
             throw new RuntimeException(e);
         }
@@ -63,11 +62,10 @@ public class ProjectClient {
     }
 
     private void playService() {
-      new Game(this.stub, channel);
+        new Game(this.stub, channel);
     }
 
     public ProjectClient(String[] args) {
-
         this.initContext(args);
         this.lookupService();
         this.playService();
