@@ -4,3 +4,6 @@
 ```shell
 ./runproducer.bat
 ```
+```shell
+./runfrontserver.bat
+```

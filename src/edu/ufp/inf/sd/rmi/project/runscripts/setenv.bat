@@ -12,10 +12,10 @@
 
 @REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
-@Set USERNAME=clone
+@Set USERNAME=olive
 
 @Set WORKDRIVE=C
-@Set JDK=%WORKDRIVE%:\\Users\\clone\\.jdks\\corretto-1.8.0_362
+@Set JDK=%WORKDRIVE%:\\Users\\olive\\.jdks\\corretto-1.8.0_362
 @REM These vars will be used to check the output folder (whereto classes are generated)
 @SET NETBEANS=NetBeans
 @SET INTELLIJ=IntelliJ
@@ -23,7 +23,7 @@
 
 @REM ==== JAVA NAMING STUFF ====
 @Set JAVAPROJ_NAME=SD
-@set JAVAPROJ=C:\Users\clone\OneDrive\Documentos\GitHub\ProjetoSD
+@set JAVAPROJ=C:\Users\olive\OneDrive\Documentos\GitHub\ProjetoSD
 @Set PACKAGE=project
 @Set PACKAGE_PREFIX=edu.ufp.inf.sd.rmi
 @Set PACKAGE_PREFIX_FOLDERS=edu/ufp/inf/sd/rmi
@@ -86,7 +86,7 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @set JAVAPROJ_DIST_FOLDER=%JAVAPROJ%\%JAVAPROJ_DIST%
 @set JAVAPROJ_JAR_FILE=%JAVAPROJ_NAME%.jar
 
-@set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;C:\Users\clone\OneDrive\Documentos\GitHub\ProjetoSD\lib\*;
+@set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;C:\Users\olive\OneDrive\Documentos\GitHub\ProjetoSD\lib\*;
 @REM @set CLASSPATH=.;%JAVAPROJ_DIST_FOLDER%/%JAVAPROJ_JAR_FILE%.jar
 
 @Set ABSPATH2CLASSES=%JAVAPROJ%\%JAVAPROJ_CLASSES%
