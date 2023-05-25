@@ -66,13 +66,16 @@ public class Battle {
             unit.acted = false;
             unit.moved = false;
         }
-        currentplayer++;
+        if (!Game.isRabbit) {
+
+            currentplayer++;
 
 
-        System.out.println("CURRENT PLAYEEEEEER; " +currentplayer);
-        if (currentplayer >= totalplayers) {
-            currentplayer = 0;
-            day++;
+            System.out.println("CURRENT PLAYEEEEEER; " + currentplayer);
+            if (currentplayer >= totalplayers) {
+                currentplayer = 0;
+                day++;
+            }
         }
         ply = Game.player.get(currentplayer);
         if (day != 1) {
@@ -156,7 +159,7 @@ public class Battle {
     }
 
     public void AddCommanders(int[] coms, boolean[] npc, int start, int city) {
-        if(Game.isRabbit){
+        if (Game.isRabbit) {
             this.gameListener();
         }
         startingmoney = start;
@@ -170,29 +173,31 @@ public class Battle {
             }
         }
     }
+
     private ArrayList<String> receivedMessages = new ArrayList<>();
 
     private void gameListener() {
 
         try {
-            String queueName =  Game.channel.queueDeclare().getQueue();
+            String queueName = Game.channel.queueDeclare().getQueue();
             String routeKey = "lobby." + Game.lobby.getID().toString();
             System.out.println(Game.lobby.getID().toString());
-            Game.channel.queueBind(queueName, "gameExchanger",routeKey);
+            Game.channel.queueBind(queueName, "gameExchanger", routeKey);
             Game.channel.basicQos(1);
             DeliverCallback deliverCallbackFanout = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
                 String[] Content = message.split(";");
 
-                if(receivedMessages.contains(Content[6])){
+                if (receivedMessages.contains(Content[6])) {
                     return;
                 }
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Player action " + message);
                 Game.gameHandler(message);
                 receivedMessages.add(Content[6]);
             };
-            Game.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {});
-        } catch(IOException ex){
+            Game.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {
+            });
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }

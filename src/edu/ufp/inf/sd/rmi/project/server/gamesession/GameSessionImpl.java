@@ -38,6 +38,8 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         return this.db.getGameLobbies();
     }
 
+
+
     public LobbyRI getLobby(int index) throws RemoteException{
         return db.getLobby(index);
     }
@@ -49,5 +51,9 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     @Override
     public synchronized void logout() throws RemoteException {
         this.db.removeSession(user);
+    }
+
+    public User getUser() throws RemoteException {
+        return user;
     }
 }

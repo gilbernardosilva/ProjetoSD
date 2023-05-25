@@ -3,6 +3,7 @@ package menus;
 import edu.ufp.inf.sd.rmi.project.client.ObserverImpl;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
 import edu.ufp.inf.sd.rmi.project.server.lobby.State;
+import edu.ufp.inf.sd.rmi.project.variables.User;
 import engine.Game;
 
 import javax.swing.*;
@@ -91,6 +92,7 @@ public class Multiplayer implements ActionListener, KeyListener {
                 Game.lobby = Game.session.getLobby(index);
                 Game.observer = new ObserverImpl(Game.lobby, Game.username, Game.game);
                 Game.lobby.attach(Game.observer);
+                //Game.session.getUser().getToken().verify();
                 new PlayerSelectionMP(index);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);

@@ -53,7 +53,14 @@ public class ProjectServer {
         String[] Content = message.split(";");
         message = message + ";" + 0 + ";" + System.currentTimeMillis();
         String routeKey = "lobby." + Content[0];
-
+        int currentPlayer = 0;
+        if (Content.length >= 8) {
+            if (Integer.parseInt(Content[8]) >= Integer.parseInt(Content[9])) {
+            } else {
+                currentPlayer = Integer.parseInt(Content[9]) + 1;
+            }
+        }
+        message = message + ";" + currentPlayer;
         this.channel.basicPublish("gameExchanger", routeKey, null, message.getBytes(StandardCharsets.UTF_8));
     }
 

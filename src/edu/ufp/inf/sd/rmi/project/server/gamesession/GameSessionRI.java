@@ -3,6 +3,7 @@ package edu.ufp.inf.sd.rmi.project.server.gamesession;
 import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyMapEnum;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyRI;
+import edu.ufp.inf.sd.rmi.project.variables.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -14,6 +15,8 @@ public interface GameSessionRI extends Remote {
 
 
     List<LobbyRI> getLobbies() throws RemoteException;
+
+    User getUser() throws RemoteException;
 
     LobbyRI getLobby(int index) throws RemoteException;
 

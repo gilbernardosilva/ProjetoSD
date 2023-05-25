@@ -143,8 +143,7 @@ public class Game extends JFrame {
     }
 
 
-
-    public static void gameHandler(String message){
+    public static void gameHandler(String message) {
         String[] content = message.split(";");
         playerID = Integer.parseInt(content[4]);
         players.Base ply = Game.player.get(Game.btl.currentplayer);
@@ -159,7 +158,10 @@ public class Game extends JFrame {
                 Game.player.get(Game.btl.currentplayer).Cancle();
                 break;
             case "endTurn":
-
+                Game.btl.currentplayer = Integer.parseInt(content[7]);
+                if (Game.btl.currentplayer >= Integer.parseInt(content[8])) {
+                    Game.btl.day++;
+                }
                 Game.btl.EndTurn();
                 break;
             case "buyUnit":
