@@ -158,7 +158,7 @@ public class Game extends JFrame {
                 Game.player.get(Game.btl.currentplayer).Cancle();
                 break;
             case "endTurn":
-                Game.btl.currentplayer = Integer.parseInt(content[7]);
+                Game.btl.currentplayer = Integer.parseInt(content[11]);
                 if (Game.btl.currentplayer >= Integer.parseInt(content[8])) {
                     Game.btl.day++;
                 }
