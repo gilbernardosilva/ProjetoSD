@@ -28,7 +28,7 @@ public class Battle {
     boolean FogOfWar;
     int startingmoney = 100;//How much you start with each round.
     int buildingmoney = 50;//How much each building provides.
-    int day = 1;
+    public int day = 1;
 
     //Winning condition settings
     public int playersleft = 1;
@@ -76,17 +76,32 @@ public class Battle {
                 currentplayer = 0;
                 day++;
             }
-        }
-        ply = Game.player.get(currentplayer);
-        if (day != 1) {
-            ply.money += buildingmoney * Buildingcount(currentplayer);
-        }
-        for (units.Base unit : Game.units) {
-            if (unit.owner == currentplayer && unit.health < unit.maxhp && unit.bld != -1) {
-                unit.Medic();
+
+            ply = Game.player.get(currentplayer);
+            if (day != 1) {
+                ply.money += buildingmoney * Buildingcount(currentplayer);
             }
+            for (units.Base unit : Game.units) {
+                if (unit.owner == currentplayer && unit.health < unit.maxhp && unit.bld != -1) {
+                    unit.Medic();
+                }
+            }
+            Game.pathing.LastChanged++;
+        } else {
+            ply = Game.player.get(currentplayer);
+            if (day != 1) {
+                ply.money += buildingmoney * Buildingcount(currentplayer);
+            }
+            for (units.Base unit : Game.units) {
+                if (unit.owner == currentplayer && unit.health < unit.maxhp && unit.bld != -1) {
+                    unit.Medic();
+                }
+            }
+
+            Game.pathing.LastChanged++;
+
+
         }
-        Game.pathing.LastChanged++;
     }
 
 
@@ -140,6 +155,8 @@ public class Battle {
             Game.units.add(Game.list.CreateUnit(type, currentplayer, x, y, false));
             Game.player.get(currentplayer).money -= cost;
         }
+
+
     }
 
     public void MaxUsers(int max) {
@@ -188,14 +205,14 @@ public class Battle {
                 String message = new String(delivery.getBody(), "UTF-8");
                 String[] Content = message.split(";");
 
-                if (receivedMessages.contains(Content[Content.length-2])) {
-                    System.out.println(Content[Content.length-2]);
+                if (receivedMessages.contains(Content[Content.length - 3])) {
+                    System.out.println(Content[Content.length - 3]);
                     System.out.println("repeated");
                     return;
                 }
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Player action " + message);
                 Game.gameHandler(message);
-                receivedMessages.add(Content[Content.length-2]);
+                receivedMessages.add(Content[Content.length - 3]);
             };
             Game.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {
             });

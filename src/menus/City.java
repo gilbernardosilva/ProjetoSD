@@ -124,6 +124,7 @@ public class City implements ActionListener, ListSelectionListener {
             String id = null;
             try {
                 id = Game.lobby.getID().toString();
+                System.out.println(ids[Units.getSelectedIndex()]);
                 String message = id + ";" +"buyUnit" + ";" + x + ";" + y + ";" + Game.playerID +";"+ ids[Units.getSelectedIndex()];
                 Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
             } catch (IOException ex) {

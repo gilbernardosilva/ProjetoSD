@@ -48,22 +48,24 @@ public class ProjectServer {
         });
     }
 
-    // 0 - id lobby; 1 - action; 2 - x; 3 - y; 4 - id player; 5 - id unit; 6 - timestamp ; 7- currentPlayer ; 8- max players
+    // 0 - id lobby; 1 - action; 2 - x; 3 - y; 4 - id player; 5 - id unit; 6 - timestamp ; 7- currentPlayer ; 8- max players ; 9 - Day
     public void gameHandler(String message) throws IOException {
         String[] Content = message.split(";");
         message = message + ";" + System.currentTimeMillis();
 
         String routeKey = "lobby." + Content[0];
         int currentPlayer = 0;
-
+        int day = 0;
         if (Content.length >= 7) {
+            day = Integer.parseInt(Content[8]);
             currentPlayer = Integer.parseInt(Content[6]) + 1;
             if (currentPlayer >= Integer.parseInt(Content[7])) {
                 System.out.println("maior que 2");
+                day++;
                 currentPlayer = 0;
             }
         }
-        message = message + ";" + currentPlayer;
+        message = message + ";" + currentPlayer + ";" + day;
         System.out.println(message);
         this.channel.basicPublish("gameExchanger", routeKey, null, message.getBytes(StandardCharsets.UTF_8));
     }

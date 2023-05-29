@@ -158,13 +158,11 @@ public class Game extends JFrame {
                 Game.player.get(Game.btl.currentplayer).Cancle();
                 break;
             case "endTurn":
-                Game.btl.currentplayer = Integer.parseInt(content[9]);
-                if (Game.btl.currentplayer >= Integer.parseInt(content[7])) {
-                    System.out.println("Dentro do if");
-                    Game.btl.day++;
-                }
-                System.out.println("current " + Game.btl.currentplayer);
+                Game.btl.day = Integer.parseInt(content[11]);
+                Game.btl.currentplayer = Integer.parseInt(content[10]);
                 Game.btl.EndTurn();
+
+                System.out.println("current " + Game.btl.currentplayer);
                 break;
             case "buyUnit":
                 Game.btl.Buyunit(Integer.parseInt(content[5]), Integer.parseInt(content[2]), Integer.parseInt(content[3]));

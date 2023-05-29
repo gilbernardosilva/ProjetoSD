@@ -82,7 +82,7 @@ public class Pause implements ActionListener {
                     try {
                         players.Base ply = Game.player.get(Game.btl.currentplayer);
                         String id = Game.lobby.getID().toString();
-                        String message = id + ";" + "endTurn"+ ";" + ply.selectx + ";" + ply.selecty + ";" + Game.lobby.getIndexObserver(Game.username) + ";0;" + Game.btl.currentplayer + ";" + Game.lobby.getMaxPlayers();
+                        String message = id + ";" + "endTurn"+ ";" + ply.selectx + ";" + ply.selecty + ";" + Game.lobby.getIndexObserver(Game.username) + ";0;" + Game.btl.currentplayer + ";" + Game.lobby.getMaxPlayers() + ";" + Game.btl.day;
                         Game.channel.basicPublish("gameExchanger", "lobby.server", null, message.getBytes(StandardCharsets.UTF_8));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
