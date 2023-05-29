@@ -8,12 +8,13 @@ import edu.ufp.inf.sd.rmi.project.server.lobby.Lobby;
 import edu.ufp.inf.sd.rmi.project.server.lobby.LobbyStatusEnum;
 
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.UUID;
 
-public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI {
+public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI, Serializable {
 
     private final DB db;
     private final User user;
@@ -55,5 +56,10 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 
     public User getUser() throws RemoteException {
         return user;
+    }
+    public void updateToken() throws RemoteException {
+        if(!this.user.getToken().verify()) {
+            this.user.getToken().updateToken(user.getUsername());
+        }
     }
 }

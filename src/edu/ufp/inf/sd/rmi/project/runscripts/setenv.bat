@@ -10,7 +10,7 @@
 @REM Script usage: setenv <role> (where role should be: server / clientImpl)
 @SET SCRIPT_ROLE=%1
 
-@REM ======================== CHANGE BELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
+@REM ======================== CHANGE BCLIENT_CLASS_PREFIXELOW ACCORDING YOUR PROJECT and PC SETTINGS ========================
 @REM ==== PC STUFF ====
 @Set USERNAME=clone
 

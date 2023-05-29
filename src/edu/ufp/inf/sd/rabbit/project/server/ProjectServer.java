@@ -48,17 +48,19 @@ public class ProjectServer {
         });
     }
 
-    // 0 - id lobby; 1 - action; 2 - x; 3 - y; 4 - id player; 5 - id unit; 6 - timestamp
+    // 0 - id lobby; 1 - action; 2 - x; 3 - y; 4 - id player; 5 - id unit; 6 - timestamp ; 7- currentPlayer ; 8- max players
     public void gameHandler(String message) throws IOException {
         String[] Content = message.split(";");
-        message = message + ";" + 0 + ";" + System.currentTimeMillis();
+        message = message + ";" + System.currentTimeMillis();
 
         String routeKey = "lobby." + Content[0];
         int currentPlayer = 0;
-        if (Content.length >= 8) {
-            if (Integer.parseInt(Content[7]) >= Integer.parseInt(Content[8])) {
-            } else {
-                currentPlayer = Integer.parseInt(Content[7]) + 1;
+
+        if (Content.length >= 7) {
+            currentPlayer = Integer.parseInt(Content[6]) + 1;
+            if (currentPlayer >= Integer.parseInt(Content[7])) {
+                System.out.println("maior que 2");
+                currentPlayer = 0;
             }
         }
         message = message + ";" + currentPlayer;

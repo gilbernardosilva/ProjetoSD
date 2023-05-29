@@ -188,12 +188,14 @@ public class Battle {
                 String message = new String(delivery.getBody(), "UTF-8");
                 String[] Content = message.split(";");
 
-                if (receivedMessages.contains(Content[6])) {
+                if (receivedMessages.contains(Content[Content.length-2])) {
+                    System.out.println(Content[Content.length-2]);
+                    System.out.println("repeated");
                     return;
                 }
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Player action " + message);
                 Game.gameHandler(message);
-                receivedMessages.add(Content[6]);
+                receivedMessages.add(Content[Content.length-2]);
             };
             Game.channel.basicConsume(queueName, true, deliverCallbackFanout, consumerTag -> {
             });

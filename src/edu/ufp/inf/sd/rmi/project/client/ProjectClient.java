@@ -1,6 +1,5 @@
 package edu.ufp.inf.sd.rmi.project.client;
 
-import com.rabbitmq.client.Channel;
 import edu.ufp.inf.sd.rmi.project.server.gamefactory.GameFactoryRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 import engine.Game;
@@ -9,7 +8,6 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +15,6 @@ public class ProjectClient {
 
     private SetupContextRMI contextRMI;
     private GameFactoryRI stub;
-    private final Channel channel;
 
 
     private void lookupService() {
@@ -26,7 +23,6 @@ public class ProjectClient {
             if (registry != null) {
                 String serviceUrl = contextRMI.getServicesUrl(0);
                 this.stub = (GameFactoryRI) registry.lookup(serviceUrl);
-
             }
         } catch (RemoteException | NotBoundException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
@@ -46,18 +42,17 @@ public class ProjectClient {
     }
 
     private void playService() {
-      new Game(this.stub, channel);
+        new Game(this.stub);
     }
 
-    public ProjectClient(String[] args, Channel channel) {
-        this.channel = channel;
+    public ProjectClient(String[] args) {
         this.initContext(args);
         this.lookupService();
         this.playService();
     }
 
-    public static void main(String[] args, Channel channel) {
-        new ProjectClient(args, channel);
+    public static void main(String[] args) {
+        new ProjectClient(args);
     }
 
 }

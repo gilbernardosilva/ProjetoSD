@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.security.SecureRandom;
 
-public class Token{
+public class Token implements Serializable{
 
     private final Algorithm algorithm;
     private final JWTVerifier verifier;

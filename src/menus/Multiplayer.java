@@ -92,7 +92,7 @@ public class Multiplayer implements ActionListener, KeyListener {
                 Game.lobby = Game.session.getLobby(index);
                 Game.observer = new ObserverImpl(Game.lobby, Game.username, Game.game);
                 Game.lobby.attach(Game.observer);
-                //Game.session.getUser().getToken().verify();
+                Game.session.updateToken();
                 new PlayerSelectionMP(index);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);

@@ -2,7 +2,7 @@ package edu.ufp.inf.sd.rmi.project.variables;
 
 import java.util.UUID;
 
-public class User{
+public class User {
 
     private String username;
     private String password;

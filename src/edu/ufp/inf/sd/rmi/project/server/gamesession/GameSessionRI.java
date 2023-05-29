@@ -16,6 +16,8 @@ public interface GameSessionRI extends Remote {
 
     List<LobbyRI> getLobbies() throws RemoteException;
 
+    void updateToken() throws RemoteException;
+
     User getUser() throws RemoteException;
 
     LobbyRI getLobby(int index) throws RemoteException;
